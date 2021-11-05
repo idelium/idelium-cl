@@ -41,4 +41,4 @@ https://appium.io/
 
 ## Run the script
 
-python idelium-cl.py
+python idelium-cl.py	
