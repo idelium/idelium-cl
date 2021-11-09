@@ -38,9 +38,9 @@ Options:
 
 For Example: 
 
-default reporting service: idelium-cl --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+default reporting service: python idelium-cl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 
-working with jira/zephyr: idelium-cl --reportingService=zephyr --idJira=prj-1234 --username=user --password=secret --environment=prod.json --useragent='apple 1134'
+working with jira/zephyr: python idelium-cl.py --reportingService=zephyr --idJira=prj-1234 --username=user --password=secret --environment=prod.json --useragent='apple 1134'
 
 """
     def getReguiredParams(self):
