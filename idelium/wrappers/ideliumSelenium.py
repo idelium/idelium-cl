@@ -80,45 +80,57 @@ class ideliumSelenium():
 
 
    def open_browser(self,driver,config,objectStep):
+      printer=initPrinter()
       driver = None
       if (config['json_config']['browser']=='chrome'):
+         chrome_options = webdriver.ChromeOptions()
          if config['device'] != None:
             mobile_emulation = { "deviceName": config['device'] }
             chrome_options = webdriver.ChromeOptions()
             chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-            driver = webdriver.Chrome(chrome_options=chrome_options)
          else:
             if config['user_agent'] != None:
-               opts = Options()
-               opts.add_argument("user-agent=" + config['user_agent'])
-               driver = webdriver.Chrome(chrome_options=opts)
-            else:
-               driver = webdriver.Chrome()
-            driver.set_window_size(config['width'], config['height'])
+               chrome_options.add_argument("user-agent=" + config['user_agent'])
+         if 'accept_self_certificate' in config['json_config']:
+            if config['json_config']['accept_self_certificate'] == True:
+               chrome_options.add_argument('ignore-certificate-errors')
+         try:
+            driver = webdriver.Chrome(chrome_options=chrome_options)
+         except BaseException as err:
+            printer.danger('webriver error')
+            print (err)
+            sys.exit(1)
+         driver.set_window_size(config['width'], config['height'])
 
-      elif (config['json_config']['browser']=='firefox'):
+      elif (config['json_config']['browser']=='firefox'):   
+         profile = webdriver.FirefoxProfile()
          if config['user_agent'] != None:
-            profile = webdriver.FirefoxProfile()
             profile.set_preference("general.useragent.override", config['user_agent'])
+         if 'accept_self_certificate' in config['json_config']:
+            if config['json_config']['accept_self_certificate'] == True:
+                  profile.accept_untrusted_certs = True
+         try:
             driver = webdriver.Firefox(profile)
-         else:
-            driver = webdriver.Firefox()
+         except BaseException as err:
+            printer.danger('webriver error')
+            print (err)
+            sys.exit(1)
+         driver.set_window_size(config['width'], config['height'])
+      elif (config['json_config']['browser']=='ieexplorer'):   
+         capabilities = webdriver.DesiredCapabilities().INTERNETEXPLORER
+         if 'accept_self_certificate' in config['json_config']:
+            if config['json_config']['accept_self_certificate'] == True:
+               capabilities['acceptSslCerts'] = True
+         try:
+            driver = webdriver.Ie(capabilities=capabilities)
+         except BaseException as err:
+            printer.danger('webriver error')
+            print (err)
+            sys.exit(1)
          driver.set_window_size(config['width'], config['height'])
       else:
-         if config['device'] != None:
-            mobile_emulation = { "deviceName": config['device'] }
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-            driver = webdriver.Chrome(chrome_options=chrome_options)
-         else:
-            if config['user_agent'] != None:
-               opts = Options()
-               opts.add_argument("user-agent=" + config['user_agent'])
-               driver = webdriver.Chrome(chrome_options=opts)
-            else:
-               driver = webdriver.Chrome()
-            driver.set_window_size(config['width'], config['height'])
-      print (objectStep)
+         printer.danger('driver not selected')
+         sys.exit(1)
       if 'url' in objectStep:
          driver.get(objectStep['url'])
       else:      
