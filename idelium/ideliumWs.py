@@ -23,11 +23,11 @@ class connection():
         r = None
         headers = {'Content-Type': 'application/json','Idelium-Key' : apiKey }
         if method=="POST":
-            r = requests.post(url,headers=headers,data=json.dumps(payload))
+            r = requests.post(url,headers=headers,data=json.dumps(payload),verify=False)
         elif method=="PUT":
-            r = requests.put(url,headers=headers,data=json.dumps(payload))
+            r = requests.put(url,headers=headers,data=json.dumps(payload),verify=False)
         elif method=="GET":
-            r = requests.get(url,headers=headers)
+            r = requests.get(url,headers=headers,verify=False)
         if debug == True:
                 print("Response: " + r.text)
                 print("Headers: " + json.dumps(headers))
