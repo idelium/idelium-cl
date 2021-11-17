@@ -48,5 +48,5 @@ python idelium-cl.py	--help
 or
 
 ```
-python idelium-cl --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+python idelium-cl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 ```
