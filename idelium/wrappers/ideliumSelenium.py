@@ -14,6 +14,7 @@ from selenium import webdriver
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -193,6 +194,35 @@ class ideliumSelenium():
       except:
          printer.danger('FAILED')
          return {"returnCode" : result.ko}
+   def select(self,driver,config,objectStep):
+      printer=initPrinter()
+      by=selBy()
+      print (objectStep)
+      try:
+         print (objectStep['note'],end="->", flush=True)
+         time.sleep(1)
+         'for retrocompat'
+         if 'xpath' in objectStep: 
+            objectStep['findBy']='XPATH'
+            objectStep['target']=objectStep['xpath']
+         select = Select(driver.find_element(by.getBy(objectStep['findBy']),objectStep['target']))
+         if 'selectType' in objectStep:
+            if objectStep['selectType'] == 'label':
+               select.select_by_visible_text(objectStep['value'])
+            elif objectStep['selectType'] == 'value':
+               select.select_by_value(objectStep['value'])
+            elif objectStep['selectType'] == 'index':
+               select.select_by_index(objectStep['value'])
+            else:
+               printer.danger('selectType:' + objectStep['selectType'] + ' not supported in this moment')
+         else:
+               select.select_by_visible_text(objectStep['value'])
+         printer.success('ok')
+         return {"returnCode" : result.ok}
+      except BaseException as err:
+         printer.danger('FAILED')
+         printer.danger(err)
+         return {"returnCode" : result.ko}
    def clear(self,driver,config,objectStep):
       printer=initPrinter()
       by=selBy()
@@ -285,6 +315,7 @@ class ideliumSelenium():
             "find_object_element":self.find_object_element,
             "click_object":self.click_object,
             "click":self.click,
+            "select": self.select,
             "clear":self.clear,
             "write":self.send_keys,
             "open_browser":self.open_browser,
