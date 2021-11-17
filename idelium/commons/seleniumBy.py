@@ -5,6 +5,7 @@ class selBy() :
         keysArray= {
             'ID': By.ID,
             'XPATH': By.XPATH,
+            'LINKTEXT': By.LINK_TEXT,
             'LINK_TEXT': By.LINK_TEXT,
             'PARTIAL_LINK_TEXT': By.PARTIAL_LINK_TEXT,
             'NAME' : By.NAME,
