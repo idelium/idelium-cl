@@ -45,8 +45,8 @@ working with jira/zephyr: python idelium-cl.py --reportingService=zephyr --idJir
 """
     def getReguiredParams(self):
         return {
-   "idProject" : 0,
-   "idCycle" : 0,
-   "environment" : 0,
-   "ideliumKey": 0,
-}
+            "idProject" : 0,
+            "idCycle" : 0,
+            "environment" : 0,
+            "ideliumKey": 0,
+        }
