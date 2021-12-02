@@ -1,6 +1,11 @@
-class eventkey() :
-    def keyEventTable (self,char):
-        charArray= {
+"""System module."""
+from __future__ import absolute_import
+class EventKey():
+    '''Event Key'''
+    @staticmethod
+    def key_event_table (char):
+        ''' key_event_table '''
+        char_list= {
                 "KEYEVENT_UNKNOWN": "0",
                 "KEYEVENT_SOFT_LEFT": "1",
                 "KEYEVENT_SOFT_RIGHT": "2",
@@ -288,22 +293,24 @@ class eventkey() :
                 "KEYEVENT_KEYCODE_THUMBS_UP": "286",
                 "KEYEVENT_KEYCODE_THUMBS_DOWN": "287"
         }
-        if char in charArray.keys():
-            return charArray[char]
+        if char in char_list.keys():
+            return char_list[char]
+        return None
+    def get_array_of_char(self,string):
+        ''' get_array_of_char '''
+        array_of_key_event=[]
+        if len(string) > 1 and self.key_event_table(string) is not None:
+            array_of_key_event.append(self.key_event_table(string.upper()))
         else:
-            return None
-    def getArrayOfChar(self,string): 
-        arrayOfKeyEvent=[]
-        if len(string) > 1 and self.keyEventTable(string) !=None:
-            arrayOfKeyEvent.append(self.keyEventTable(string.upper()))
-        else:
-            for letter in [char for char in string]:
-                keyValue=self.keyEventTable('KEYEVENT_'+ letter.upper())
-                if keyValue==None:
+            for letter in list(string):
+            #for letter in [char for char in string]:
+                key_value = self.key_event_table('KEYEVENT_' + letter.upper())
+                if key_value is None:
                     print ('this char: ' + letter + ' will be ignored')
                 else:
-                    if letter.isupper()==True:
-                        arrayOfKeyEvent.append( keyValue + "," + self.keyEventTable('KEYEVENT_META_SHIFT_ON'))
+                    if letter.isupper() is True:
+                        array_of_key_event.append(
+                            key_value + "," + self.key_event_table('KEYEVENT_META_SHIFT_ON'))
                     else:
-                        arrayOfKeyEvent.append(keyValue)
-        return arrayOfKeyEvent
+                        array_of_key_event.append(key_value)
+        return array_of_key_event

@@ -1,10 +1,8 @@
-"""
-Integration Library for selenium
-Author: idel fuschini
-
-"""
+"""System module."""
+from __future__ import absolute_import
 from enum import Enum
-class result(Enum):
-    ok = 0
-    ko = 1
-    na = 2
+class Result(Enum):
+    '''result'''
+    OK = 0
+    KO = 1
+    NA = 2

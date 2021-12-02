@@ -1,8 +1,13 @@
+"""System module."""
+from __future__ import absolute_import
 from selenium.webdriver.common.by import By
 
-class selBy() :
-    def getBy (self,key):
-        keysArray= {
+class SelBy() :
+    ''' SelBy '''
+    @staticmethod
+    def get_by (key):
+        ''' get_by'''
+        keys_array= {
             'ID': By.ID,
             'XPATH': By.XPATH,
             'LINKTEXT': By.LINK_TEXT,
@@ -16,7 +21,6 @@ class selBy() :
             'CSS_SELECTOR' : By.CSS_SELECTOR,
             'CSS' : By.CSS_SELECTOR,
         }
-        if key.upper() in keysArray.keys():
-            return keysArray[key.upper()]
-        else:
-            return None
+        if key.upper() in keys_array.keys():
+            return keys_array[key.upper()]
+        return None

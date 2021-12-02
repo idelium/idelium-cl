@@ -1,19 +1,19 @@
-"""
-Integration Library for selenium
-Author: idel fuschini
+"""System module."""
+from __future__ import absolute_import
 
-"""
-
-class proxy(object): 
-    def setProxy(self,url):
+class Proxy():
+    '''Proxy class'''
+    @staticmethod
+    def set_proxy(url):
+        '''Set the proxy'''
         http_proxy  = "<proxy>"
-        proxyDict = { 
-              "http"  : http_proxy, 
-              "https" : http_proxy 
-        }  
+        proxy_dict = {
+              "http"  : http_proxy,
+              "https" : http_proxy
+        }
         return_value=None
         if url == "<proxy>":
-            return_value=proxyDict
+            return_value = proxy_dict
         elif url == "<proxy>":
-            return_value=proxyDict
+            return_value = proxy_dict
         return return_value

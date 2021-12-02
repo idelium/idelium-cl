@@ -42,11 +42,11 @@ https://appium.io/
 ## Run the script
 
 ```
-python idelium-cl.py	--help
+python ideliumcl.py	--help
 ```
 
 or
 
 ```
-python idelium-cl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 ```

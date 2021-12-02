@@ -1,330 +1,394 @@
-"""
-ideliumSelenium Library for selenium
-Versione 0.0.1
-
-Author: idel fuschini
-
-"""
-import time,sys
-from idelium.commons.ideliumPrinter import initPrinter
-from idelium.commons.resultEnum import result
-from idelium.commons.seleniumKeyEvent import eventKey
-from idelium.commons.seleniumBy import selBy
+"""System module."""
+from __future__ import absolute_import
+import time
+import sys
 from selenium import webdriver
-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from idelium.commons.ideliumprinter import InitPrinter
+from idelium.commons.resultenum import Result
+from idelium.commons.seleniumkeyevent import EventKey
+from idelium.commons.seleniumby import SelBy
 
 
-class ideliumSelenium(): 
-   def sleep (self, driver,config,objectStep):
-       time.sleep(objectStep['seconds'])
-       return {"returnCode" : result.ok}
+class IdeliumSelenium:
+    ''' IdeliumSelenium '''
+    @staticmethod
+    def sleep(driver, config, object_step):
+        ''' Sleep '''
+        time.sleep(object_step["seconds"])
+        return {'returnCode': Result.OK}
 
-   def wait_and_click(self,driver,xpath_condition,note):
-      if self.wait_for_next_step_real(driver,xpath_condition,note) == result.ok:
-         if self.click_xpath(driver,xpath_condition,note) == result.ko:
-            return {"returnCode" : result.ko}
-         else:
-            return {"returnCode" : result.ok}
-      else:
-         return {"returnCode" : result.ok}
-
-   def find_element_by_xpath(self,driver,xpath_condition,note=None):
-      return driver.find_element_by_xpath(xpath_condition)
-   def find_elements_by_xpath(self,driver,xpath_condition,note=None):   
-      return driver.find_elements_by_xpath(xpath_condition)
-   def find_element(self,driver,by,target,note=None):
-      return driver.find_element(by,target)
-   def find_elements(self,driver,by,target,note=None):   
-      return driver.find_elements(by,target)
-   def page_source(self,driver,note=None):
-      return driver.page_source
-   def switch_to_frame(self,driver,objectDriver,note=None):
-      driver.switch_to_frame(objectDriver)
-      return result.ok
-   def switch_to_default_content(self,driver,object,note=None):
-      driver.switch_to_default_content()
-      return result.ok
-   def find_object_element(self, seleniumObject, xpath_condition, note=None):
-        return seleniumObject.find_element_by_xpath(xpath_condition)
-   def click_object(self,seleniumObject,note):   
-      printer=initPrinter()
-      try:
-         print (note,end="->", flush=True)
-         time.sleep(1)
-         seleniumObject.click()
-         printer.success('ok')
-         return result.ok
-      except Exception as e:
-         print (e) 
-         printer.danger('FAILED')
-         #sys.exit(1)
-         return result.ko
-
-   def drag_and_drop(driver,config,objectStep):
-      printer=initPrinter()
-      try:
-         dragElement=driver.find_element_by_xpath(objectStep['xpathDrag'])
-         dropElement=driver.find_element_by_xpath(objectStep['xpathDrop'])
-         action=ActionChain(driver)
-         action.drag_and_drop(dragElement,dropElement).perform()
-         return {"returnCode" : result.ok}
-      except:
-         printer.danger('FAILED')
-         #sys.exit(1)
-         return {"returnCode" : result.ko}
-
-
-
-   def open_browser(self,driver,config,objectStep):
-      printer=initPrinter()
-      driver = None
-      if (config['json_config']['browser']=='chrome'):
-         chrome_options = webdriver.ChromeOptions()
-         if config['device'] != None:
-            mobile_emulation = { "deviceName": config['device'] }
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-         else:
-            if config['user_agent'] != None:
-               chrome_options.add_argument("user-agent=" + config['user_agent'])
-         if 'accept_self_certificate' in config['json_config']:
-            if config['json_config']['accept_self_certificate'] == True:
-               chrome_options.add_argument('ignore-certificate-errors')
-         try:
-            driver = webdriver.Chrome(chrome_options=chrome_options)
-         except BaseException as err:
-            printer.danger('webriver error')
-            print (err)
-            sys.exit(1)
-         driver.set_window_size(config['width'], config['height'])
-
-      elif (config['json_config']['browser']=='firefox'):   
-         profile = webdriver.FirefoxProfile()
-         if config['user_agent'] != None:
-            profile.set_preference("general.useragent.override", config['user_agent'])
-         if 'accept_self_certificate' in config['json_config']:
-            if config['json_config']['accept_self_certificate'] == True:
-                  profile.accept_untrusted_certs = True
-         try:
-            driver = webdriver.Firefox(profile)
-         except BaseException as err:
-            printer.danger('webriver error')
-            print (err)
-            sys.exit(1)
-         driver.set_window_size(config['width'], config['height'])
-      elif (config['json_config']['browser']=='ieexplorer'):   
-         capabilities = webdriver.DesiredCapabilities().INTERNETEXPLORER
-         if 'accept_self_certificate' in config['json_config']:
-            if config['json_config']['accept_self_certificate'] == True:
-               capabilities['acceptSslCerts'] = True
-         try:
-            driver = webdriver.Ie(capabilities=capabilities)
-         except BaseException as err:
-            printer.danger('webriver error')
-            print (err)
-            sys.exit(1)
-         driver.set_window_size(config['width'], config['height'])
-      else:
-         printer.danger('driver not selected')
-         sys.exit(1)
-      if 'url' in objectStep:
-         driver.get(objectStep['url'])
-      else:      
-         driver.get(config['json_config']['url'])
-      returnCode=result.ok   
-      objectStep['xpath']=config['json_config']['xpath_check_url']
-      if self.wait_for_next_step(driver,config,objectStep)['returnCode']==result.ko:
-         returnCode=result.ko   
-         config['json_step']['attachScreenshot'] = True
-         config['json_step']['failedExit'] = True
-      return {"driver" : driver, "returnCode" : returnCode, "config": config}
-
-
-   def write_localstorage(self,driver,config,objectStep):
-      printer=initPrinter()
-      try:
-         print (objectStep['note'],end="->", flush=True)
-         scriptJS=""
-         for objectData in objectStep['dataLocalStorage']:
-               for key in objectData:
-                  scriptJS=scriptJS + "localStorage.setItem(\"" + key  + "\", '" +  objectData[key] + "')\n"
-         scriptJS=scriptJS +"return Array.apply(0, new Array(localStorage.length)).map(function (o, i) { return localStorage.getItem(localStorage.key(i)); })"
-         driver.execute_script(scriptJS)
-         printer.success('ok')
-         return {"returnCode" : result.ok}
-      except:
-         printer.danger('FAILED')
-         #sys.exit(1)
-         return {"returnCode" : result.ko}
-
-   def screen_shot(self,driver,file_name):
-      """
-         screenshot
-      """
-      printer=initPrinter()
-      try:
-         driver.get_screenshot_as_file(file_name)
-         return result.ok
-      except:
-         printer.danger('FAILED')
-         sys.exit(1)
-         return result.ko
-
-   '''
-      generic no xpath 
-   '''
-   def click(self,driver,config,objectStep):
-      printer=initPrinter()
-      by=selBy()
-      try:
-         print (objectStep['note'],end="->", flush=True)
-         time.sleep(1)
-         'for retrocompat'
-         if 'xpath' in objectStep: 
-            objectStep['findBy']='XPATH'
-            objectStep['target']=objectStep['xpath']
-         driver.find_element(by.getBy(objectStep['findBy']),objectStep['target']).click()
-         printer.success('ok')
-         return {"returnCode" : result.ok}
-      except:
-         printer.danger('FAILED')
-         return {"returnCode" : result.ko}
-   def select(self,driver,config,objectStep):
-      printer=initPrinter()
-      by=selBy()
-      print (objectStep)
-      try:
-         print (objectStep['note'],end="->", flush=True)
-         time.sleep(1)
-         'for retrocompat'
-         if 'xpath' in objectStep: 
-            objectStep['findBy']='XPATH'
-            objectStep['target']=objectStep['xpath']
-         select = Select(driver.find_element(by.getBy(objectStep['findBy']),objectStep['target']))
-         if 'selectType' in objectStep:
-            if objectStep['selectType'] == 'label':
-               select.select_by_visible_text(objectStep['value'])
-            elif objectStep['selectType'] == 'value':
-               select.select_by_value(objectStep['value'])
-            elif objectStep['selectType'] == 'index':
-               select.select_by_index(objectStep['value'])
+    def wait_and_click(self,driver, xpath_condition, note):
+        ''' wait and click '''
+        if self.wait_for_next_step_real(driver, xpath_condition,
+                                        note) == Result.OK:
+            if self.click_xpath(driver, xpath_condition, note) == Result.KO:
+                return {'returnCode': Result.KO}
             else:
-               printer.danger('selectType:' + objectStep['selectType'] + ' not supported in this moment')
-         else:
-               select.select_by_visible_text(objectStep['value'])
-         printer.success('ok')
-         return {"returnCode" : result.ok}
-      except BaseException as err:
-         printer.danger('FAILED')
-         printer.danger(err)
-         return {"returnCode" : result.ko}
-   def clear(self,driver,config,objectStep):
-      printer=initPrinter()
-      by=selBy()
-      try:
-         print (objectStep['note'],end="->", flush=True)
-         time.sleep(1)
-         if 'xpath' in objectStep: 
-            objectStep['findBy']='XPATH'
-            objectStep['target']=objectStep['xpath']
-         driver.find_element(by.getBy(objectStep['findBy']),objectStep['target']).clear()
-         printer.success('ok')
-         return {"returnCode" : result.ok}
-      except:
-         printer.danger('FAILED')
-         return {"returnCode" : result.ko}
-   def send_keys(self,driver,config,objectStep):
-      printer=initPrinter()
-      seleniumKey=eventKey()
-      by=selBy()
-      try:
-         string_to_input=objectStep['text']
-         key=seleniumKey.getKey(string_to_input)
-         if key == None:
-            if objectStep['text'][:1] == '%':
-               string_to_input=config['json_config'][objectStep['text'][1:]]
-         else:
-            string_to_input=key
-         print (objectStep['note'],end="->", flush=True)
-         time.sleep(1)
-         if 'xpath' in objectStep: 
-            objectStep['findBy']='XPATH'
-            objectStep['target']=objectStep['xpath']
-         driver.find_element(by.getBy(objectStep['findBy']),objectStep['target']).send_keys(string_to_input)
-         printer.success('ok')
-         return {"returnCode" : result.ok}
-      except:
-         printer.danger('FAILED')
-         #sys.exit(1)
-         return {"returnCode" : result.ko}
+                return {'returnCode': Result.OK}
+        else:
+            return {'returnCode': Result.OK}
 
+    @staticmethod
+    def find_element_by_xpath(driver, xpath_condition, note=None):
+        ''' find element by xpath condition '''
+        return driver.find_element_by_xpath(xpath_condition)
+    @staticmethod
+    def find_elements_by_xpath(self, driver, xpath_condition, note=None):
+        '''find elements by xpath condition'''
+        return driver.find_elements_by_xpath(xpath_condition)
+    @staticmethod
+    def find_element(driver, by, target, note=None):
+        ''' find element'''
+        return driver.find_element(by, target)
+    @staticmethod
+    def find_elements(driver, by, target, note=None):
+        ''' find elements'''
+        return driver.find_elements(by, target)
+    @staticmethod
+    def page_source(driver, note=None):
+        ''' page source for debug is useful '''
+        return driver.page_source
+    @staticmethod
+    def switch_to_frame(driver, object_driver, note=None):
+        ''' switch_to_frame '''
+        driver.switch_to_frame(object_driver)
+        return Result.OK
+    @staticmethod
+    def switch_to_default_content(driver, object, note=None):
+        ''' switch_to_default_content '''
+        driver.switch_to_default_content()
+        return Result.OK
+    @staticmethod
+    def find_object_element(self, selenium_object, xpath_condition, note=None):
+        ''' find_object_element '''
+        return selenium_object.find_element_by_xpath(xpath_condition)
+    @staticmethod
+    def click_object(selenium_object, note):
+        ''' click_object '''
+        printer = InitPrinter()
+        try:
+            print(note, end="->", flush=True)
+            time.sleep(1)
+            selenium_object.click()
+            printer.success("ok")
+            return Result.OK
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            # sys.exit(1)
+            return Result.KO
+    @staticmethod
+    def drag_and_drop(driver, config, object_step):
+        ''' drag_and_drop '''
+        printer = InitPrinter()
+        try:
+            drag_element = driver.find_element_by_xpath(
+                object_step["xpathDrag"])
+            drop_element = driver.find_element_by_xpath(
+                object_step["xpathDrop"])
+            action = ActionChains(driver)
+            action.drag_and_drop(drag_element, drop_element).perform()
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            # sys.exit(1)
+            return {'returnCode': Result.KO}
+    def open_browser(self, driver, config, object_step):
+        ''' open browser '''
+        printer = InitPrinter()
+        driver = None
+        if config["json_config"]["browser"] == "chrome":
+            chrome_options = webdriver.ChromeOptions()
+            if config["device"] is not None:
+                mobile_emulation = {"deviceName": config["device"]}
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.add_experimental_option("mobileEmulation",
+                                                       mobile_emulation)
+            else:
+                if config["useragent"] is not None:
+                    chrome_options.add_argument("user-agent=" +
+                                                config["useragent"])
+            if "accept_self_certificate" in config["json_config"]:
+                if config["json_config"]["accept_self_certificate"] is True:
+                    chrome_options.add_argument("ignore-certificate-errors")
+            try:
+                driver = webdriver.Chrome(chrome_options=chrome_options)
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        elif config["json_config"]["browser"] == "firefox":
+            profile = webdriver.FirefoxProfile()
+            if config["useragent"] is not None:
+                profile.set_preference("general.useragent.override",
+                                       config["useragent"])
+            if "accept_self_certificate" in config["json_config"]:
+                if config["json_config"]["accept_self_certificate"] is True:
+                    profile.accept_untrusted_certs = True
+            try:
+                driver = webdriver.Firefox(profile)
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        elif config["json_config"]["browser"] == "safari":
+            try:
+                driver = webdriver.Safari()
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        elif config["json_config"]["browser"] == "opera":
+            try:
+                driver = webdriver.Opera()
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        elif config["json_config"]["browser"] == "edge":
+            try:
+                driver = webdriver.Edge()
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        elif config["json_config"]["browser"] == "iexplorer":
+            capabilities = webdriver.DesiredCapabilities().INTERNETEXPLORER
+            if "accept_self_certificate" in config["json_config"]:
+                if config["json_config"]["accept_self_certificate"] is True:
+                    capabilities["acceptSslCerts"] = True
+            try:
+                driver = webdriver.Ie(capabilities=capabilities)
+            except BaseException as err:
+                printer.danger("webriver error")
+                print(err)
+                sys.exit(1)
+        else:
+            printer.danger("driver not selected")
+            sys.exit(1)
+        driver.set_window_size(config["width"], config["height"])
+        if "url" in object_step:
+            driver.get(object_step["url"])
+        else:
+            driver.get(config["json_config"]["url"])
+        return_code = Result.OK
+        object_step["xpath"] = config["json_config"]["xpath_check_url"]
+        if (self.wait_for_next_step(driver, config,
+                                    object_step)['returnCode'] == Result.KO):
+            return_code = Result.KO
+            config["json_step"]["attachScreenshot"] = True
+            config["json_step"]["failedExit"] = True
+        return {"driver": driver, 'returnCode': return_code, "config": config}
+    @staticmethod
+    def write_localstorage(driver, config, object_step):
+        ''' write_localstorage '''
+        printer = InitPrinter()
+        try:
+            print(object_step["note"], end="->", flush=True)
+            script_js = ""
+            for object_data in object_step["dataLocalStorage"]:
+                for key in object_data:
+                    script_js = (script_js+ 'localStorage.setItem("' + key +
+                                "\", '" + object_data[key] + "')\n")
+            script_js = (
+                script_js +
+                "return Array.apply(0, new Array(localStorage.length)).map(function (o, i)" +
+                "{ return localStorage.getItem(localStorage.key(i)); })"
+            )
+            driver.execute_script(script_js)
+            printer.success("ok")
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            # sys.exit(1)
+            return {'returnCode': Result.KO}
 
+    def screen_shot(self, driver, file_name):
+        """ screenshot """
+        printer = InitPrinter()
+        try:
+            driver.get_screenshot_as_file(file_name)
+            return Result.OK
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            sys.exit(1)
 
+    def click(self, driver, config, object_step):
+        '''click '''
+        printer = InitPrinter()
+        by = SelBy()
+        try:
+            print(object_step["note"], end="->", flush=True)
+            time.sleep(1)
+            #for retrocompat
+            if "xpath" in object_step:
+                object_step["findBy"] = "XPATH"
+                object_step["target"] = object_step["xpath"]
+            driver.find_element(by.get_by(object_step["findBy"]),
+                                object_step["target"]).click()
+            printer.success("ok")
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            return {'returnCode': Result.KO}
 
-   def wait_for_next_step(self,driver,config,objectStep):
-      by=selBy()
-      if 'xpath' in objectStep: 
-         objectStep['findBy']='XPATH'
-         objectStep['target']=objectStep['xpath']
-      if self.wait_for_next_step_real(driver,by.getBy(objectStep['findBy']),objectStep['target'],objectStep['note']) == result.ko:
-         return {"returnCode" : result.ko}
-      else:
-         return {"returnCode" : result.ok}
-   
-   def wait_for_next_step_real(self,driver,by,target,note,waitSeconds=20):
-      failed=False
-      printer=initPrinter()
-      try:
-         print (note,end="->", flush=True)
-         WebDriverWait(driver, waitSeconds).until(
-              EC.presence_of_element_located((by, target))
-         )
-      except:
-         printer.danger('FAILED')
-         failed=True
-         return result.ko
-      finally:
-         if failed==False:
-            printer.success('ok')
-            return result.ok   
-         return result.ko
+    def select(self, driver, config, object_step):
+        ''' select '''
+        printer = InitPrinter()
+        by = SelBy()
+        print(object_step)
+        try:
+            print(object_step["note"], end="->", flush=True)
+            time.sleep(1)
+            #for retrocompat
+            if "xpath" in object_step:
+                object_step["findBy"] = "XPATH"
+                object_step["target"] = object_step["xpath"]
+            select = Select(
+                driver.find_element(by.get_by(object_step["findBy"]),
+                                    object_step["target"]))
+            if "selectType" in object_step:
+                if object_step["selectType"] == "label":
+                    select.select_by_visible_text(object_step["value"])
+                elif object_step["selectType"] == "value":
+                    select.select_by_value(object_step["value"])
+                elif object_step["selectType"] == "index":
+                    select.select_by_index(object_step["value"])
+                else:
+                    printer.danger("selectType:" + object_step["selectType"] +
+                                   " not supported in this moment")
+            else:
+                select.select_by_visible_text(object_step["value"])
+            printer.success("ok")
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            printer.danger(err)
+            return {'returnCode': Result.KO}
 
+    def clear(self, driver, config, object_step):
+        ''' clear '''
+        printer = InitPrinter()
+        by = SelBy()
+        try:
+            print(object_step["note"], end="->", flush=True)
+            time.sleep(1)
+            if "xpath" in object_step:
+                object_step["findBy"] = "XPATH"
+                object_step["target"] = object_step["xpath"]
+            driver.find_element(by.get_by(object_step["findBy"]),
+                                object_step["target"]).clear()
+            printer.success("ok")
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            return {'returnCode': Result.KO}
 
+    def send_keys(self, driver, config, object_step):
+        ''' send keys '''
+        printer = InitPrinter()
+        selenium_key = EventKey()
+        by = SelBy()
+        try:
+            string_to_input = object_step["text"]
+            key = selenium_key.get_key(string_to_input)
+            if key is None:
+                if object_step["text"][:1] == "%":
+                    string_to_input = config["json_config"][object_step["text"]
+                                                            [1:]]
+            else:
+                string_to_input = key
+            print(object_step["note"], end="->", flush=True)
+            time.sleep(1)
+            if "xpath" in object_step:
+                object_step["findBy"] = "XPATH"
+                object_step["target"] = object_step["xpath"]
+            driver.find_element(
+                by.get_by(object_step["findBy"]),
+                object_step["target"]).send_keys(string_to_input)
+            printer.success("ok")
+            return {'returnCode': Result.OK}
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            # sys.exit(1)
+            return {'returnCode': Result.KO}
 
+    def wait_for_next_step(self, driver, config, object_step):
+        ''' wait for next step'''
+        by = SelBy()
+        if "xpath" in object_step:
+            object_step["findBy"] = "XPATH"
+            object_step["target"] = object_step["xpath"]
+        if (self.wait_for_next_step_real(
+                driver,
+                by.get_by(object_step["findBy"]),
+                object_step["target"],
+                object_step["note"],
+        ) == Result.KO):
+            return {'returnCode': Result.KO}
+        return {'returnCode': Result.OK}
 
+    def wait_for_next_step_real(self,
+                                driver,
+                                by,
+                                target,
+                                note,
+                                wait_seconds=20):
+        '''wait for next step'''
+        failed = False
+        printer = InitPrinter()
+        try:
+            print(note, end="->", flush=True)
+            WebDriverWait(driver, wait_seconds).until(
+                EC.presence_of_element_located((by, target)))
+        except BaseException as err:
+            printer.danger("FAILED")
+            print(err)
+            failed = True
+            return Result.KO
+        finally:
+            if failed is False:
+                printer.success("ok")
+                return Result.OK
+            return Result.KO
 
-
-   def  command (self,command,driver,objConfig,objectStep):
-      printer=initPrinter()
-      commands= {
-            "wait_and_click":self.wait_and_click,
-            "wait_for_next_step":self.wait_for_next_step,
-            "wait_for_next_step_real":self.wait_for_next_step_real,
-            "find_element_by_xpath":self.find_element_by_xpath,
-            "find_elements_by_xpath":self.find_elements_by_xpath,
-            "find_element":self.find_element_by_xpath,
-            "find_elements":self.find_elements_by_xpath,
-            "page_source":self.page_source,
-            "switch_to_frame":self.switch_to_frame,
-            "switch_to_default_content":self.switch_to_default_content,
-            "find_object_element":self.find_object_element,
-            "click_object":self.click_object,
-            "click":self.click,
+    def command(self, command, driver, obj_config, object_step):
+        ''' command '''
+        printer = InitPrinter()
+        commands = {
+            "wait_and_click": self.wait_and_click,
+            "wait_for_next_step": self.wait_for_next_step,
+            "wait_for_next_step_real": self.wait_for_next_step_real,
+            "find_element_by_xpath": self.find_element_by_xpath,
+            "find_elements_by_xpath": self.find_elements_by_xpath,
+            "find_element": self.find_element_by_xpath,
+            "find_elements": self.find_elements_by_xpath,
+            "page_source": self.page_source,
+            "switch_to_frame": self.switch_to_frame,
+            "switch_to_default_content": self.switch_to_default_content,
+            "find_object_element": self.find_object_element,
+            "click_object": self.click_object,
+            "click": self.click,
             "select": self.select,
-            "clear":self.clear,
-            "write":self.send_keys,
-            "open_browser":self.open_browser,
-            "write_localstorage":self.write_localstorage,
-            "screen_shot": self.screen_shot,       
+            "clear": self.clear,
+            "write": self.send_keys,
+            "open_browser": self.open_browser,
+            "write_localstorage": self.write_localstorage,
+            "screen_shot": self.screen_shot,
             "sleep": self.sleep,
-      }
-      if command in commands.keys():
-         return commands[command](driver,objConfig,objectStep)
-      else:
-         printer.danger ('Idelium Selenium | action non trovata:' + command)
-         return None
+        }
+        if command in commands.keys():
+            return commands[command](driver, obj_config, object_step)
+        printer.danger("Idelium Selenium | action non trovata:" + command)
+        return None

@@ -1,8 +1,13 @@
+"""System module."""
+from __future__ import absolute_import
 from selenium.webdriver.common.keys import Keys
 
-class eventKey() :
-    def getKey (self,key):
-        keysArray= {
+class EventKey() :
+    ''' Event Key '''
+    @staticmethod
+    def get_key (key):
+        ''' get_key'''
+        keys_array= {
             "KEY_ADD": Keys.ADD,
             "KEY_ALT": Keys.ALT,
             "KEY_ARROW_DOWN": Keys.ARROW_DOWN,
@@ -66,9 +71,8 @@ class eventKey() :
             "KEY_SPACE": Keys.SPACE,
             "KEY_SUBTRACT": Keys.SUBTRACT,
             "KEY_TAB": Keys.TAB,
-            "KEY_UP": Keys.UP,            
+            "KEY_UP": Keys.UP,
         }
-        if key in keysArray.keys():
-            return keysArray[key]
-        else:
-            return None
+        if key in keys_array.keys():
+            return keys_array[key]
+        return None
