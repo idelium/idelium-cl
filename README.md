@@ -23,7 +23,7 @@ pip install selenium
 pip install Appium-Python-Client
 ```
 
-## Webdrivers
+## Test Libraries used
 
 ### Selenium
 
@@ -37,7 +37,29 @@ For configure idelium-cl for test native, hybrid and mobile web apps with iOS, A
 
 https://appium.io/
 
+## Webdriver
 
+The webdriver is the interface to write instructions that work interchangeably across browsers, each browser has its own driver:
+
+#### ChromeDriver
+
+https://chromedriver.chromium.org/downloads
+
+#### Geckodriver
+
+https://github.com/mozilla/geckodriver/releases
+
+#### EDGE
+
+https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+
+#### Internet Explorer 11
+
+https://support.microsoft.com/en-us/topic/webdriver-support-for-internet-explorer-11-9e1331c5-3198-c835-f622-ada80fe8c1fa
+
+#### Safari
+
+https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari
 
 ## Run the script
 
