@@ -1,6 +1,6 @@
 ![Idelium](https://idelium.io/assets/images/idelium.png)
 
-# Idelium-CL
+# Idelium-CLI
 
 This is Idelium Command Line is the tool for test automation integrated with Idelium Web.
 
