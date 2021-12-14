@@ -17,8 +17,8 @@ Python 3.8.X
 ## Configuration
 
 ```
-git clone https://github.com/idelium/idelium-cl.git
-cd idelium-cl
+git clone https://github.com/idelium/idelium-cli.git
+cd idelium-cli
 pip install selenium
 pip install Appium-Python-Client
 ```
