@@ -17,7 +17,7 @@ class InitIdelium():
     def get_syntax():
         ''' help command line '''
         return """
-    \033[1mUsage\033[0m: idelium-cl.py [options]
+    \033[1mUsage\033[0m: ideliumcl.py [options]
 
     Options:
 
@@ -54,9 +54,9 @@ class InitIdelium():
 
     For Example: 
 
-    default reporting service: python idelium-cl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+    default reporting service: python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 
-    working with jira/zephyr: python idelium-cl.py --reportingService=zephyr --idJira=prj-1234 --username=user --password=secret --environment=prod.json --useragent='apple 1134'
+    working with jira/zephyr: python ideliumcl.py --reportingService=zephyr --idJira=prj-1234 --username=user --password=secret --environment=prod.json --useragent='apple 1134'
 
     """
     @staticmethod
