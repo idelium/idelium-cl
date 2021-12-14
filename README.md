@@ -45,7 +45,7 @@ The webdriver is the interface to write instructions that work interchangeably a
 
 https://chromedriver.chromium.org/downloads
 
-#### Geckodriver
+#### Geckodriver for Firefox
 
 https://github.com/mozilla/geckodriver/releases
 
