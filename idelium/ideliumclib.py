@@ -82,7 +82,7 @@ class InitIdelium():
             'test':False,
             'is_debug':False,
             'device':None,
-            'width':1920,
+            'width': 1920,
             'height':1080,
             'username':None,
             'password':None,
@@ -116,23 +116,17 @@ class InitIdelium():
             if command in cl_params:
                 if command == 'ideliumKey':
                     cl_params['ideliumKey']=''
-                    for cmd in array_command:
-                        if cmd != "--ideliumKey":
-                            if i == '':
-                                cl_params['ideliumKey'] = cl_params['ideliumKey'] + '='
-                            else:
-                                cl_params['ideliumKey'] = cl_params['ideliumKey']+ cmd
-                cl_params[command]=array_command[1]
+                    print (len(array_command))
+                    if len(array_command)==3:
+                        cl_params['ideliumKey'] = array_command[1] + '=' 
+                    else:
+                        cl_params['ideliumKey'] = array_command[1]
+                else:
+                    cl_params[command]=array_command[1]
                 if command in check_required:
                     check_required[command]=1
-            elif array_command[0] == "--ideliumKey":
-                cl_params['ideliumKey']=''
-                for command in array_command:
-                    if command != "--ideliumKey":
-                        if i == '':
-                            cl_params['ideliumKey'] = cl_params['ideliumKey'] + '='
-                        else:
-                            cl_params['ideliumKey'] = cl_params['ideliumKey']+ command
+            elif array_command[0] == "--verbose":
+                cl_params['is_debug'] = True
             elif array_command[0] == "--help":
                 print(self.get_syntax())
                 sys.exit(0)
