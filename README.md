@@ -43,13 +43,13 @@ python ideliumcl.py --ideliumServer
 
 ### Selenium
 
-For configure idelium-cl for test web application with chrome,firefox, windows, safari:
+For configure idelium-cli for test web application with chrome,firefox, windows, safari:
 
 https://www.selenium.dev/documentation/webdriver/
 
 ### Appium
 
-For configure idelium-cl for test native, hybrid and mobile web apps with iOS, Android and Windows:
+For configure idelium-cli for test native, hybrid and mobile web apps with iOS, Android and Windows:
 
 https://appium.io/
 

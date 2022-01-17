@@ -41,6 +41,10 @@ class InitIdelium():
     --ideliumKey            is the key for access to the idelium api
     --forcedownload         force to ovewrite the configuration files
     --idChannel             idChannel
+    
+    Idelium server
+    --ideliumServer         with this option idelium-cli is in server mode
+    --ideliumServerPort     default is 8691
 
     Zephir 
     --jiraApiUrl            for change the default jira url (https://<host jira>/rest/api/latest/)
@@ -117,7 +121,6 @@ class InitIdelium():
             if command in cl_params:
                 if command == 'ideliumKey':
                     cl_params['ideliumKey']=''
-                    print (len(array_command))
                     if len(array_command)==3:
                         cl_params['ideliumKey'] = array_command[1] + '=' 
                     else:
@@ -127,7 +130,6 @@ class InitIdelium():
                 elif command == 'ideliumServerPort': 
                     cl_params['ideliumServerPort'] = int(array_command[1])
                 else:
-                    print (command)
                     cl_params[command]=array_command[1]
                 if command in check_required:
                     check_required[command]=1

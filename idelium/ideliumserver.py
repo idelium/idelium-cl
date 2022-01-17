@@ -32,34 +32,6 @@ class IdeliumServer(BaseHTTPRequestHandler):
             os.remove(cl_params['dir_idelium_scripts'] + 'server')
             self.wfile.write(
                 bytes('{"message": "reset done"}', "utf-8"))
-        elif len(data) == 5:
-            print ('ok')
-            self.send_response(200)
-            self.send_header("Content-type", "application/json")
-            self.end_headers()
-            params = cl_params
-            params['idCycle'] = data[1]
-            params['idProject'] = data[2]
-            params['environment'] = data[3]
-            params['key'] = data[4]
-            self.close_connection
-            if not os.path.exists(cl_params['dir_idelium_scripts'] + 'server'):
-                define_parameters = idelium_cl_lib.load_parameters(
-                    params, ideliumws, printer)
-                if define_parameters is False:
-                    self.wfile.write(
-                        bytes('{"message": "bad parameters"}', "utf-8"))
-                else:
-                    params = define_parameters['cl_params']
-                    test_config = define_parameters['test_config']
-                    if cl_params['reportingService'] == 'idelium':
-                        Thread(target=ideliumws.start_test, args=[
-                            idelium, test_config, params]).start()
-                        self.wfile.write(
-                                bytes('{"message": "test started"}', "utf-8"))
-            else:
-                self.wfile.write(
-                    bytes('{"message": "another test is running, please retry"}', "utf-8"))
         else:
             print('ko')
             self.send_response(401)
