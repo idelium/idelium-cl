@@ -103,6 +103,10 @@ class IdeliumSelenium:
         ''' open browser '''
         printer = InitPrinter()
         driver = None
+        return_code = Result.OK
+        ''' only for server mode '''
+        if 'browser' in config:
+           config["json_config"]["browser"] = config["browser"]
         if config["json_config"]["browser"] == "chrome":
             chrome_options = webdriver.ChromeOptions()
             if config["device"] is not None:
@@ -122,7 +126,9 @@ class IdeliumSelenium:
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                if config['ideliumServer'] is False:
+                    return_code = Result.KO
+                    sys.exit(1)
         elif config["json_config"]["browser"] == "firefox":
             profile = webdriver.FirefoxProfile()
             if config["useragent"] is not None:
@@ -136,28 +142,36 @@ class IdeliumSelenium:
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                return_code = Result.KO
+                if config['ideliumServer'] is False:
+                    sys.exit(1)
         elif config["json_config"]["browser"] == "safari":
             try:
                 driver = webdriver.Safari()
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                return_code = Result.KO
+                if config['ideliumServer'] is False:
+                    sys.exit(1)
         elif config["json_config"]["browser"] == "opera":
             try:
                 driver = webdriver.Opera()
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                return_code = Result.KO
+                if config['ideliumServer'] is False:
+                    sys.exit(1)
         elif config["json_config"]["browser"] == "edge":
             try:
                 driver = webdriver.Edge()
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                return_code = Result.KO
+                if config['ideliumServer'] is False:
+                    sys.exit(1)
         elif config["json_config"]["browser"] == "iexplorer":
             capabilities = webdriver.DesiredCapabilities().INTERNETEXPLORER
             if "accept_self_certificate" in config["json_config"]:
@@ -168,22 +182,26 @@ class IdeliumSelenium:
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
-                sys.exit(1)
+                return_code = Result.KO
+                if config['ideliumServer'] is False:
+                    sys.exit(1)
         else:
             printer.danger("driver not selected")
-            sys.exit(1)
-        driver.set_window_size(config["width"], config["height"])
-        if "url" in object_step:
-            driver.get(object_step["url"])
-        else:
-            driver.get(config["json_config"]["url"])
-        return_code = Result.OK
-        object_step["xpath"] = config["json_config"]["xpath_check_url"]
-        if (self.wait_for_next_step(driver, config,
-                                    object_step)['returnCode'] == Result.KO):
-            return_code = Result.KO
-            config["json_step"]["attachScreenshot"] = True
-            config["json_step"]["failedExit"] = True
+            if config['ideliumServer'] is False:
+                sys.exit(1)
+        if return_code == Result.OK:
+            driver.set_window_size(config["width"], config["height"])
+            if "url" in object_step:
+                driver.get(object_step["url"])
+            else:
+                driver.get(config["json_config"]["url"])
+            return_code = Result.OK
+            object_step["xpath"] = config["json_config"]["xpath_check_url"]
+            if (self.wait_for_next_step(driver, config,
+                                        object_step)['returnCode'] == Result.KO):
+                return_code = Result.KO
+                config["json_step"]["attachScreenshot"] = True
+                config["json_step"]["failedExit"] = True
         return {"driver": driver, 'returnCode': return_code, "config": config}
     @staticmethod
     def write_localstorage(driver, config, object_step):
@@ -210,7 +228,7 @@ class IdeliumSelenium:
             # sys.exit(1)
             return {'returnCode': Result.KO}
 
-    def screen_shot(self, driver, file_name):
+    def screen_shot(self, driver, file_name,is_server):
         """ screenshot """
         printer = InitPrinter()
         try:
@@ -219,7 +237,8 @@ class IdeliumSelenium:
         except BaseException as err:
             printer.danger("FAILED")
             print(err)
-            sys.exit(1)
+            if is_server is False:
+                sys.exit(1)
 
     def click(self, driver, config, object_step):
         '''click '''

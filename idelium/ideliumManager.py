@@ -83,7 +83,10 @@ class StartManager:
                             "Warning stepType: " + object_step["stepType"] +
                             " not exist or there is an error in your extra module"
                         )
-                        sys.exit(1)
+                        if config['ideliumServer'] is False:
+                            sys.exit(1)
+                        else:
+                            status=2
                 if status == "2":
                     step_failed = object_step
             else:
@@ -128,4 +131,5 @@ class StartManager:
                 printer.danger("----------")
                 printer.danger("Warning, the file step: " + file_step_name +
                                " not exist or is not a json (err 2)")
-                sys.exit(1)
+                if config['ideliumServer'] is False:
+                    sys.exit(1)

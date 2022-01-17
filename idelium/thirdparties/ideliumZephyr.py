@@ -432,7 +432,7 @@ class ZephyrConnection:
                         if not os.path.exists(path):
                             os.makedirs(path)
                         if config["json_step"]["attachScreenshot"] is True:
-                            wrapper.screen_shot(driver, path + file_name)
+                            wrapper.screen_shot(driver, path + file_name,config['ideliumServer'])
                             if config["is_test"] is False:
                                 self.add_attachment_buffered(
                                     config["is_debug"],

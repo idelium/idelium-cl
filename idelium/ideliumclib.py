@@ -35,7 +35,6 @@ class InitIdelium():
     --width                 default width of screen 1024
     --height                default height of screen 768
     --device                if is set useragent,height and width are ignored
-    --fileSteps             for test single step json "name1,name2,...."
     --url                   url for test 
     --ideliumws_baseurl     idelium server url ex: http://localhost
     --reportingService      where the data will be save: idelium | zephyr
@@ -104,11 +103,13 @@ class InitIdelium():
             'forcedownload':False,
             'local':False,
             'ideliumServer': False,
+            'ideliumServerPort': 8691,
         }
     def define_parameters(self,args,ideliumws,printer):
         ''' set all necessary parameters '''
         cl_params= self.get_default_parameters()
         check_required=self.get_reguired_parameters()
+        cl_params['dir_idelium_scripts'] = tempfile.gettempdir()
         count=0
         for i in args:
             array_command=i.split("=")
@@ -121,7 +122,12 @@ class InitIdelium():
                         cl_params['ideliumKey'] = array_command[1] + '=' 
                     else:
                         cl_params['ideliumKey'] = array_command[1]
+                elif command == 'ideliumServer':
+                    cl_params['ideliumServer'] = True
+                elif command == 'ideliumServerPort': 
+                    cl_params['ideliumServerPort'] = int(array_command[1])
                 else:
+                    print (command)
                     cl_params[command]=array_command[1]
                 if command in check_required:
                     check_required[command]=1
@@ -132,69 +138,61 @@ class InitIdelium():
                 sys.exit(0)
             else:
                 if count > 0:
-                    print ("\n" + array_command[0] + ": is not a valid option")
                     print (self.get_syntax())
+                    print("\n" + array_command[0] + ": is not a valid option")
                     sys.exit(1)
             count=count=count + 1
         count_req=0
         for i in check_required:
             count_req=count_req + check_required[i]
-        if cl_params['ideliumKey']is None:
-            file_idelium_key=str(Path.home()) + '/.idelium'
-            if Path(file_idelium_key).is_file() is True:
-                file = open(file_idelium_key, "r")
-                cl_params['ideliumKey']=file.read()
-            else:
-                print (self.get_syntax())
-                printer.danger('ideliumKey is not setted !')
-                sys.exit(1)
-        if cl_params['fileSteps'] is None:
+        if cl_params['ideliumServer'] is False:
+            if cl_params['ideliumKey']is None:
+                file_idelium_key=str(Path.home()) + '/.idelium'
+                if Path(file_idelium_key).is_file() is True:
+                    file = open(file_idelium_key, "r")
+                    cl_params['ideliumKey']=file.read()
+                else:
+                    print (self.get_syntax())
+                    printer.danger('ideliumKey is not setted !')
+                    sys.exit(1)
+        if cl_params['ideliumServer'] is False:
             if cl_params['reportingService'] == 'idelium':
                 if (cl_params['idProject'] is None
-                    or cl_params['idCycle'] is None ):
-                    print (self.get_syntax())
+                        or cl_params['idCycle'] is None):
+                    print(self.get_syntax())
                     printer.danger("\nidProject and idCycle are mandatory")
                     sys.exit(1)
-
-            if cl_params['reportingService']=='zephyr':
-                if count_req <4:
-                    print (self.get_syntax())
-                    printer.danger ("\nMissed required options")
+                if cl_params['reportingService'] == 'zephyr':
+                    if count_req < 4:
+                        print(self.get_syntax())
+                        printer.danger("\nMissed required options")
+                        sys.exit(1)
+                if cl_params['environment'] is None:
+                    print(self.get_syntax())
+                    printer.danger("\nenvironment must be set")
                     sys.exit(1)
+        return {
+            'cl_params': cl_params,
+        }
 
-                if (cl_params['idVersion']
-                    is None
-                    and cl_params['idCycle']
-                    is not None) or (cl_params['idVersion']
-                                is not None
-                                and cl_params['idCycle']
-                                is None):
-                    printer.danger ("\nversionId and cycleId must be setted together")
-                    print (self.get_syntax())
-                    sys.exit(1)
-                if len (args) < 5:
-                    print (self.get_syntax())
-                    sys.exit(1)
-        if cl_params['environment'] is None:
-            print ("\nenvironment must be set")
-            print (self.get_syntax())
-            sys.exit(1)
+    def load_parameters(self, cl_params, ideliumws, printer):
 
-        cl_params['dir_idelium_scripts']=tempfile.gettempdir()
         sys.path.append(cl_params['dir_idelium_scripts'])
 
         cl_params['api_idelium']=cl_params['ideliumws_baseurl'] + '/api/ideliumcl/'
         cl_params['printer']=printer
         test_config=None
-        test_config=ideliumws.download_configuration_files(cl_params)
         json_config=None
         json_step_config=None
-        print ('Environment:' + cl_params['environment'])
+        test_config = ideliumws.download_configuration_files(cl_params)
+        if test_config is False:
+            return False
+        print('Environment:' + cl_params['environment'])
         if cl_params['environment'] in test_config['environments']:
             json_config=test_config['environments'][cl_params['environment']]
         else:
             printer.danger('Environment "' + cl_params['environment']
-                           + '" or idProject ' + cl_params['idProject'] + ' not exist')
+                            + '" or idProject ' + cl_params['idProject'] + ' not exist')
             sys.exit(1)
         if 'userAgent' in json_config:
             cl_params['user_agent']=json_config['userAgent']
@@ -214,7 +212,6 @@ class InitIdelium():
             cl_params['device'] = json_config['device']
         if cl_params['url'] is not None:
             json_config['url']=cl_params['url']
-
         cl_params['json_config']=json_config
         cl_params['json_step_config']=json_step_config
 

@@ -23,6 +23,22 @@ pip install selenium
 pip install Appium-Python-Client
 ```
 
+## Run the script
+
+idelium-cli can be used in two ways:
+
+1. to directly launch a test cycle, useful for those who want to integrate integration tests with jenkins, bamboo or similar:
+
+```
+python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+```
+
+2. for idelium-cli in server mode useful for those who want to buy idelium enterprise, and then configure different platforms and launch tests remotely:
+
+```
+python ideliumcl.py --ideliumServer
+```
+
 ## Test Libraries used
 
 ### Selenium
@@ -60,15 +76,3 @@ https://support.microsoft.com/en-us/topic/webdriver-support-for-internet-explore
 #### Safari
 
 https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari
-
-## Run the script
-
-```
-python ideliumcl.py	--help
-```
-
-or
-
-```
-python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
-```

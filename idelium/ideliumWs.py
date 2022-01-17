@@ -8,6 +8,8 @@ from pathlib import Path
 import base64
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+from idelium.ideliumserver import IdeliumServer
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 from PIL import Image
 
@@ -177,7 +179,10 @@ class IdeliumWs:
         if object_cycle == -1:
             printer.danger("The id_cycle " + str(config["idCycle"]) +
                            " not exist")
-            sys.exit(1)
+            if config['ideliumServer'] is False:
+                sys.exit(1)
+            else:
+                return False
         array_steps = {}
         array_environments = {}
         array_plugins = {}
@@ -276,10 +281,11 @@ class IdeliumWs:
 
     def start_test(self, idelium, test_configurations, config):
         ''' start test '''
+        if config['ideliumServer'] is True:
+            Path(config['dir_idelium_scripts'] + 'server').touch()
         wrapper = idelium.get_wrapper(config)
         object_cycle = self.get_cycles(config)
         driver = None
-
         id_cycle = self.create_folder(config)['idCycle']
         for cycle in object_cycle:
             #search test for this cycle
@@ -316,7 +322,7 @@ class IdeliumWs:
                         if not os.path.exists(path):
                             os.makedirs(path)
                         if config["json_step"]["attachScreenshot"] is True:
-                            wrapper.screen_shot(driver, path + file_name)
+                            wrapper.screen_shot(driver, path + file_name,config['ideliumServer'])
                         if config["test"] is False:
                             file_name_jpg = path + str(id_test) + ".jpg"
                             with Image.open(path + file_name) as img:
@@ -345,5 +351,6 @@ class IdeliumWs:
                             test_failed = True
                     else:
                         self.update_test(config, id_test, 1)
-
+            if config['ideliumServer'] is True:
+                os.remove(config['dir_idelium_scripts'] + 'server')
             driver.quit()

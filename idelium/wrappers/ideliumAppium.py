@@ -64,7 +64,9 @@ class IdeliumAppium():
             config['json_step']['failedExit'] = False
             printer.danger('Verify if Appium server is running')
             printer.danger('The test is stopped')
-            sys.exit(1)
+            if config['ideliumServer'] is False:
+                sys.exit(1)
+            return_code=Result.KO
         return {"driver" : driver,"config" : config, "returnCode" : return_code}
     def appium_send_keys(self,driver,config,object_step):
         ''' appium_send_keys '''
@@ -249,7 +251,8 @@ class IdeliumAppium():
         except BaseException as err:
             printer.danger('FAILED')
             print(err)
-            sys.exit(1)
+            if config['ideliumServer'] is False:
+                sys.exit(1)
             return Result.KO
     def appium_is_app_installed(self,driver,config,object_step):
         """
