@@ -4,7 +4,7 @@
 
 This is Idelium Command Line is the tool for test automation integrated with Idelium Web.
 
-Idelium-CL can be used through a continues integration software, such as Jenkins, GitLabs, Bamboo etc.
+Idelium-CLI can be used through a continues integration software, such as Jenkins, GitLabs, Bamboo etc.
 
 For more info: https://idelium.io
 
