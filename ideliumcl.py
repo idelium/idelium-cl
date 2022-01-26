@@ -46,6 +46,6 @@ else:
     sslctx.load_cert_chain(certfile='cert/cert.pem', keyfile="cert/key.pem")
     httpd = HTTPServer(server_address, IdeliumServer)
     httpd.socket = sslctx.wrap_socket(httpd.socket, server_side=True)
-    printer.success('server start on port:' +
+    printer.success('Server start on port:' +
           str(cl_params['ideliumServerPort']))
     httpd.serve_forever()
