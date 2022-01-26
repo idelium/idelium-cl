@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from idelium.commons.ideliumprinter import InitPrinter
@@ -122,7 +123,7 @@ class IdeliumSelenium:
                 if config["json_config"]["accept_self_certificate"] is True:
                     chrome_options.add_argument("ignore-certificate-errors")
             try:
-                driver = webdriver.Chrome(chrome_options=chrome_options)
+                driver = webdriver.Chrome(ChromeDriverManager().install())
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
