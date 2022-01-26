@@ -14,13 +14,21 @@ For more info: https://idelium.io
 
 Python 3.8.X
 
-## Configuration
+## Install Libraries
+
+
+```
+pip install selenium
+pip install Appium-Python-Client
+pip install webdriver-manage
+```
+
+
+## Download idelium-cli
 
 ```
 git clone https://github.com/idelium/idelium-cli.git
 cd idelium-cli
-pip install selenium
-pip install Appium-Python-Client
 ```
 
 ## Run the script
@@ -76,3 +84,7 @@ https://support.microsoft.com/en-us/topic/webdriver-support-for-internet-explore
 #### Safari
 
 https://developer.apple.com/documentation/webkit/testing_with_webdriver_in_safari
+
+## Thanks
+
+Special thanks to Marco Vernarecci, who supports me to make the product better
