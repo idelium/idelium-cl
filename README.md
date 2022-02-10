@@ -21,6 +21,12 @@ Python 3.8.X
 pip install selenium
 pip install Appium-Python-Client
 pip install webdriver-manager
+pip install Pillow
+
+```
+On windows:
+```
+pip install Pillow
 ```
 
 
