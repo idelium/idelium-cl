@@ -8,8 +8,6 @@ from pathlib import Path
 import base64
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
-from idelium.ideliumserver import IdeliumServer
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 from PIL import Image
 
