@@ -23,6 +23,7 @@ pip install libmagic
 pip install Appium-Python-Client
 pip install webdriver-manager
 pip install Pillow
+$ pip install Postpy2
 pip install git+https://github.com/behave/behave
 ```
 On windows:
