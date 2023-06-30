@@ -36,7 +36,7 @@ class InitIdelium():
     --height                default height of screen 768
     --device                if is set useragent,height and width are ignored
     --url                   url for test 
-    --ideliumws_baseurl     idelium server url ex: http://localhost
+    --ideliumwsBaseurl      idelium server url ex: https://localhost
     --reportingService      where the data will be save: idelium | zephyr
     --ideliumKey            is the key for access to the idelium api
     --forcedownload         force to ovewrite the configuration files
@@ -77,7 +77,7 @@ class InitIdelium():
         return {
             'execution_name': 'automation test python',
             'reportingService': 'idelium',
-            'ideliumws_baseurl': 'https://service.idelium.io',
+            'ideliumwsBaseurl': 'https://service.idelium.io',
             'base_url':None,
             'zephyrApiUrl':None,
             'jiraApiUrl':None,
@@ -181,7 +181,7 @@ class InitIdelium():
 
         sys.path.append(cl_params['dir_idelium_scripts'])
 
-        cl_params['api_idelium']=cl_params['ideliumws_baseurl'] + '/api/ideliumcl/'
+        cl_params['api_idelium']=cl_params['ideliumwsBaseurl'] + '/api/ideliumcl/'
         cl_params['printer']=printer
         test_config=None
         json_config=None

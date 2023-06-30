@@ -198,6 +198,8 @@ class IdeliumSelenium:
                 driver.get(config["json_config"]["url"])
             return_code = Result.OK
             object_step["xpath"] = config["json_config"]["xpath_check_url"]
+            if object_step['xpath'] == '':
+                object_step['xpath'] = '/html'
             if (self.wait_for_next_step(driver, config,
                                         object_step)['returnCode'] == Result.KO):
                 return_code = Result.KO

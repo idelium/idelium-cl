@@ -86,15 +86,18 @@ class IdeliumWs:
                                 config["is_debug"])
 
     @staticmethod
-    def create_step(config, id_test, id_step, name, status):
+    def create_step(config, id_test, id_step, name, status, data, typeofstep):
         ''' create step '''
         url = config["api_idelium"] + "step"
+        print (data)
         payload = {
             "testCycleId": config['idCycle'],
             "testId": id_test,
             "stepId": id_step,
             "name": name,
             "status": int(status),
+            "data": json.dumps(data),
+            "type": typeofstep,
             "screenshots": "[]",
         }
         return Connection.start("POST", url, payload, config["ideliumKey"],
@@ -297,7 +300,6 @@ class IdeliumWs:
                     json_step = test_configurations["steps"][test["name"] +
                                                             "_" +
                                                             str(test["id"])]
-                    print(json.dumps(json_step))
                     printer.underline(json_step["name"] + "(" +
                                       str(test["id"]) + ")")
                     config["wrapper"] = wrapper
@@ -306,6 +308,8 @@ class IdeliumWs:
                     object_return = idelium.execute_step(driver, config)
                     status = object_return["status"]
                     driver = object_return["driver"]
+                    postman_data=object_return["postman_data"]
+                    typeofstep=object_return["type"]
                     step_failed = object_return["step_failed"]
                     config["status"] = status
                     config["step_failed"] = step_failed
@@ -313,8 +317,11 @@ class IdeliumWs:
                     if config["test"] is False:
                         id_step = self.create_step(config, id_test, test["id"],
                                                  test["name"],
-                                                 status)['idStep']
-                    if status in ('2','5'):
+                                                 status,
+                                                 postman_data,
+                                                 typeofstep
+                                                 )['idStep']
+                    if status in ('2','5') and object_return['type']=='seleniumOrAppium':
                         path = "screenshots/"
                         file_name = str(id_test) + ".png"
                         if not os.path.exists(path):
@@ -351,4 +358,5 @@ class IdeliumWs:
                         self.update_test(config, id_test, 1)
             if config['ideliumServer'] is True:
                 os.remove(config['dir_idelium_scripts'] + 'server')
-            driver.quit()
+            if driver != None:
+                driver.quit()

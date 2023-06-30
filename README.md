@@ -19,10 +19,11 @@ Python 3.8.X
 
 ```
 pip install selenium
+pip install libmagic
 pip install Appium-Python-Client
 pip install webdriver-manager
 pip install Pillow
-
+pip install git+https://github.com/behave/behave
 ```
 On windows:
 ```
@@ -41,19 +42,30 @@ cd idelium-cli
 
 idelium-cli can be used in two ways:
 
-1. to directly launch a test cycle, useful for those who want to integrate integration tests with jenkins, bamboo or similar:
+To directly launch a test cycle, useful for those who want to integrate integration tests with jenkins, bamboo or similar:
 
 ```
 python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 ```
 
-2. for idelium-cli in server mode useful for those who want to buy idelium enterprise, and then configure different platforms and launch tests remotely:
+For use with [idelium-docker](https://github.com/idelium/idelium-docker):
+
+```
+python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod --ideliumwsBaseurl='https://localhost'
+```
+
+### idelium-cli server mode
+for idelium-cli in server mode useful for those who want to buy idelium enterprise, and then configure different platforms and launch tests remotely:
 
 ```
 python ideliumcl.py --ideliumServer
 ```
 
 ## Test Libraries used
+
+### Behave
+
+for test webservices Idelium use bdd (https://en.wikipedia.org/wiki/Behavior-driven_development) with behavior library:
 
 ### Selenium
 
@@ -74,6 +86,8 @@ The webdriver is the interface to write instructions that work interchangeably a
 #### ChromeDriver
 
 https://chromedriver.chromium.org/downloads
+
+idelium-cli download automically the correct version
 
 #### Geckodriver for Firefox
 
