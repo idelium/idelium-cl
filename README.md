@@ -64,10 +64,6 @@ python ideliumcl.py --ideliumServer
 
 ## Test Libraries used
 
-### Behave
-
-for test webservices Idelium use bdd (https://en.wikipedia.org/wiki/Behavior-driven_development) with behavior library:
-
 ### Selenium
 
 For configure idelium-cli for test web application with chrome,firefox, windows, safari:

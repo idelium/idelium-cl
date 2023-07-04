@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.towncrier]
+# For finding the __version__
+package = "idelium"
+package_dir = "src"
+# For writing into the correct file
+filename = "NEWS.rst"
+# For finding the news fragments
+directory = "news/"
+
+destination = "src/idelium/_vendor/"
+requirements = "src/idelium/_vendor/vendor.txt"
+namespace = "idelium._vendor"
+
+[tool.vendoring.transformations]
+substitute = [
+  # pkg_resource's vendored packages are directly vendored in idelium.
+  { match='pkg_resources\.extern', replace="idelium._vendor" },
+  { match='from \.extern', replace="from idelium._vendor" },
+  { match='''\('pygments\.lexers\.''', replace="('idelium._vendor.pygments.lexers." },
+]
+drop = [
+  # contains unnecessary scripts
+  "bin/",
+  # interpreter and OS specific msgpack libs
+  "msgpack/*.so",
+  # unneeded parts of setuptools
+  "easy_install.py",
+  "setuptools",
+  "pkg_resources/_vendor/",
+  "_distutils_hack",
+  "distutils-precedence.pth",
+  "pkg_resources/extern/",
+  # trim vendored pygments styles and lexers
+  "pygments/styles/[!_]*.py",
+  '^pygments/lexers/(?!python|__init__|_mapping).*\.py$',
+  # trim rich's markdown support
+  "rich/markdown.py",
+]
+
+[tool.vendoring.typing-stubs]
+six = ["six.__init__", "six.moves.__init__", "six.moves.configparser"]
+distro = []
+
+[tool.vendoring.license.directories]
+setuptools = "pkg_resources"
+
+
+
+
+[tool.ruff]
+extend-exclude = [
+    "./build",
+    ".scratch",
+    "_vendor",
+    "data",
+]
+ignore = [
+    "B019",
+    "B020",
+    "B904", # Ruff enables opinionated warnings by default
+    "B905", # Ruff enables opinionated warnings by default
+    "G202",
+]
+line-length = 88
+select = [
+    "B",
+    "E",
+    "F",
+    "W",
+    "G",
+    "ISC",
+    "I",
+]
+
+[tool.ruff.per-file-ignores]
+"noxfile.py" = ["G"]
+"tests/*" = ["B011"]
+
+[tool.ruff.isort]
+# We need to explicitly make idelium "first party" as it's imported by code in
+# the docs and tests directories.
+known-first-party = ["idelium"]
+known-third-party = ["idelium._vendor"]
