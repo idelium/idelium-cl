@@ -27,7 +27,6 @@ def main(args: Optional[List[str]] = None) -> int:
     printer.print_important_text ("Selenium version:" + idelium_cl_lib.get_selenium_version())
     if args is None:
         args = sys.argv
-    print (args)
     define_parameters= idelium_cl_lib.define_parameters(args,ideliumws,printer)
     cl_params=define_parameters['cl_params']
 
@@ -60,5 +59,3 @@ def main(args: Optional[List[str]] = None) -> int:
             str(cl_params['ideliumServerPort']))
         httpd.serve_forever()
 
-
-main (sys.argv)

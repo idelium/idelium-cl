@@ -10,6 +10,6 @@ def main(args: Optional[List[str]] = None) -> int:
 
     For additional details, see https://github.com/pypa/pip/issues/7498.
     """
-    from idelium._internal.ideliumcl import main as _main
+    from idelium._internal.main import main as _main
 
     sys.exit(_main())
