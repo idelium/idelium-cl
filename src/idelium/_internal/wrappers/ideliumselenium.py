@@ -7,6 +7,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.microsoft import IEDriverManager
+from selenium.webdriver.chrome import service
+from webdriver_manager.opera import OperaDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from idelium._internal.commons.ideliumprinter import InitPrinter
@@ -139,7 +144,7 @@ class IdeliumSelenium:
                 if config["json_config"]["accept_self_certificate"] is True:
                     profile.accept_untrusted_certs = True
             try:
-                driver = webdriver.Firefox(profile)
+                driver = webdriver.Firefox(GeckoDriverManager().install())
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
@@ -157,7 +162,9 @@ class IdeliumSelenium:
                     sys.exit(1)
         elif config["json_config"]["browser"] == "opera":
             try:
-                driver = webdriver.Opera()
+                webdriver_service = service.Service(OperaDriverManager().install())
+                webdriver_service.start()
+                driver = webdriver.Remote(webdriver_service.service_url, webdriver.DesiredCapabilities.OPERA)
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
@@ -166,7 +173,7 @@ class IdeliumSelenium:
                     sys.exit(1)
         elif config["json_config"]["browser"] == "edge":
             try:
-                driver = webdriver.Edge()
+                driver = webdriver.Edge(EdgeChromiumDriverManager().install())
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
@@ -179,7 +186,7 @@ class IdeliumSelenium:
                 if config["json_config"]["accept_self_certificate"] is True:
                     capabilities["acceptSslCerts"] = True
             try:
-                driver = webdriver.Ie(capabilities=capabilities)
+                driver=webdriver.Ie(IEDriverManager().install())
             except BaseException as err:
                 printer.danger("webriver error")
                 print(err)
