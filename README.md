@@ -10,33 +10,16 @@ For more info: https://idelium.io
 
 [![Introducing Idelium](https://img.youtube.com/vi/nGe3c_CU0NQ/0.jpg)](https://youtu.be/nGe3c_CU0NQ)
 
-## Requirement
+## Supported python version
 
 Python 3.8.X
 
-## Install Libraries
+## Installing
 
-
-```
-pip install selenium
-pip install libmagic
-pip install Appium-Python-Client
-pip install webdriver-manager
-pip install Pillow
-$ pip install Postpy2
-pip install git+https://github.com/behave/behave
-```
-On windows:
-```
-pip install Pillow
-```
-
-
-## Download idelium-cli
+If you have pip on your system, you can simply install or upgrade the Python bindings:
 
 ```
-git clone https://github.com/idelium/idelium-cli.git
-cd idelium-cli
+pip install
 ```
 
 ## Run the script
