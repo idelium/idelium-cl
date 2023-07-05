@@ -46,20 +46,20 @@ idelium-cli can be used in two ways:
 To directly launch a test cycle, useful for those who want to integrate integration tests with jenkins, bamboo or similar:
 
 ```
-python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
+idelium --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod
 ```
 
 For use with [idelium-docker](https://github.com/idelium/idelium-docker):
 
 ```
-python ideliumcl.py --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod --ideliumwsBaseurl='https://localhost'
+idelium --ideliumKey=1234 --idCycle=2 --idProject=8 --environment=prod --ideliumwsBaseurl='https://localhost'
 ```
 
 ### idelium-cli server mode
 for idelium-cli in server mode useful for those who want to buy idelium enterprise, and then configure different platforms and launch tests remotely:
 
 ```
-python ideliumcl.py --ideliumServer
+idelium --ideliumServer
 ```
 
 ## Test Libraries used
