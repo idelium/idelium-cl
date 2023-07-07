@@ -2,7 +2,7 @@
 
 # Idelium-CLI
 
-This is Idelium Command Line is the tool for test automation integrated with Idelium Web.
+This is Idelium Command Line is the tool for test automation integrated with [Idelium AS](https://github.com/idelium/idelium-docker).
 
 Idelium-CLI can be used through a continues integration software, such as Jenkins, GitLabs, Bamboo etc.
 
