@@ -10,7 +10,7 @@ For more info: https://idelium.io
 
 [![Introducing Idelium](https://img.youtube.com/vi/nGe3c_CU0NQ/0.jpg)](https://youtu.be/nGe3c_CU0NQ)
 
-## Supported python version
+## Prerequisite
 
 Python 3.8.X
 
