@@ -20,7 +20,7 @@ idelium=StartManager()
 printer=InitPrinter()
 ideliumws=IdeliumWs()
 idelium_cl_lib=InitIdelium()
-IDELIUM_VERSION='1.0.1'
+IDELIUM_VERSION='1.0.3'
 
 def main(args: Optional[List[str]] = None) -> int:
     printer.print_important_text("Idelium Command Line " + IDELIUM_VERSION)
@@ -58,4 +58,3 @@ def main(args: Optional[List[str]] = None) -> int:
         printer.success('Server start on port:' +
             str(cl_params['ideliumServerPort']))
         httpd.serve_forever()
-

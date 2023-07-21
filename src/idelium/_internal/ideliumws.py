@@ -89,7 +89,6 @@ class IdeliumWs:
     def create_step(config, id_test, id_step, name, status, data, typeofstep):
         ''' create step '''
         url = config["api_idelium"] + "step"
-        print (data)
         payload = {
             "testCycleId": config['idCycle'],
             "testId": id_test,
@@ -314,9 +313,10 @@ class IdeliumWs:
                     config["status"] = status
                     config["step_failed"] = step_failed
                     id_step = None
+                    #test["name"],
                     if config["test"] is False:
                         id_step = self.create_step(config, id_test, test["id"],
-                                                 test["name"],
+                                                 json_step["name"],
                                                  status,
                                                  postman_data,
                                                  typeofstep

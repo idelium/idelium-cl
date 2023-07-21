@@ -38,7 +38,7 @@ class StartManager:
         wrapper = config["wrapper"]
         printer = config["printer"]
         typeOfStep='seleniumOrAppium'
-        postman_data=None
+        postman_data=None        
         for object_step in config["json_step"]["steps"]:
             if status == "1":
                 if object_step['stepType'] == 'postman_collection':
