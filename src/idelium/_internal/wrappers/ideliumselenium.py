@@ -130,11 +130,15 @@ class IdeliumSelenium:
             try:
                 driver = webdriver.Chrome(ChromeDriverManager().install())
             except BaseException as err:
-                printer.danger("webriver error")
-                print(err)
-                if config['ideliumServer'] is False:
-                    return_code = Result.KO
-                    sys.exit(1)
+                
+                printer.warning("webdriver not found, try locally")
+                try: 
+                    driver=webdriver.Chrome()
+                except:
+                    printer.danger("webriver error")
+                    if config['ideliumServer'] is False:
+                        return_code = Result.KO
+                        sys.exit(1)
         elif config["json_config"]["browser"] == "firefox":
             profile = webdriver.FirefoxProfile()
             if config["useragent"] is not None:
@@ -146,11 +150,14 @@ class IdeliumSelenium:
             try:
                 driver = webdriver.Firefox(GeckoDriverManager().install())
             except BaseException as err:
-                printer.danger("webriver error")
-                print(err)
-                return_code = Result.KO
-                if config['ideliumServer'] is False:
-                    sys.exit(1)
+                printer.warning("webdriver not found, try locally")
+                try:
+                    driver = webdriver.Firefox()
+                except:
+                    printer.danger("webriver error")
+                    if config['ideliumServer'] is False:
+                        return_code = Result.KO
+                        sys.exit(1)
         elif config["json_config"]["browser"] == "safari":
             try:
                 driver = webdriver.Safari()
@@ -175,11 +182,14 @@ class IdeliumSelenium:
             try:
                 driver = webdriver.Edge(EdgeChromiumDriverManager().install())
             except BaseException as err:
-                printer.danger("webriver error")
-                print(err)
-                return_code = Result.KO
-                if config['ideliumServer'] is False:
-                    sys.exit(1)
+                printer.warning("webdriver not found, try locally")
+                try:
+                    driver = webdriver.Edge()
+                except:
+                    printer.danger("webriver error")
+                    if config['ideliumServer'] is False:
+                        return_code = Result.KO
+                        sys.exit(1)
         elif config["json_config"]["browser"] == "iexplorer":
             capabilities = webdriver.DesiredCapabilities().INTERNETEXPLORER
             if "accept_self_certificate" in config["json_config"]:
@@ -188,11 +198,14 @@ class IdeliumSelenium:
             try:
                 driver=webdriver.Ie(IEDriverManager().install())
             except BaseException as err:
-                printer.danger("webriver error")
-                print(err)
-                return_code = Result.KO
-                if config['ideliumServer'] is False:
-                    sys.exit(1)
+                printer.warning("webdriver not found, try locally")
+                try:
+                    driver = webdriver.Ie()
+                except:
+                    printer.danger("webriver error")
+                    if config['ideliumServer'] is False:
+                        return_code = Result.KO
+                        sys.exit(1)
         else:
             printer.danger("driver not selected")
             if config['ideliumServer'] is False:
