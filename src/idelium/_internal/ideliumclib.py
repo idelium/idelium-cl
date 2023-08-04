@@ -113,7 +113,7 @@ class InitIdelium():
         ''' set all necessary parameters '''
         cl_params= self.get_default_parameters()
         check_required=self.get_reguired_parameters()
-        cl_params['dir_idelium_scripts'] = tempfile.gettempdir()
+        cl_params['dir_idelium_scripts'] = tempfile.mkdtemp()
         count=0
         for i in args:
             array_command=i.split("=")
@@ -125,6 +125,8 @@ class InitIdelium():
                         cl_params['ideliumKey'] = array_command[1] + '=' 
                     else:
                         cl_params['ideliumKey'] = array_command[1]
+                elif command == "forcedownload":                
+                    cl_params['forcedownload'] = True
                 elif command == 'ideliumServer':
                     cl_params['ideliumServer'] = True
                 elif command == 'ideliumServerPort': 
