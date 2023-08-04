@@ -432,5 +432,5 @@ class IdeliumSelenium:
         }
         if command in commands.keys():
             return commands[command](driver, obj_config, object_step)
-        printer.danger("Idelium Selenium | action non trovata:" + command)
+        printer.warning("Idelium Selenium | action nof found try as plugin:" + command)
         return None

@@ -718,5 +718,5 @@ class IdeliumAppium():
         }
         if command in commands.keys():
             return commands[command](driver,obj_config,object_step)
-        printer.danger ('Idelium Appium | action non trovata:' + command)
+        printer.danger ('Idelium Appium | action not found:' + command)
         return None
