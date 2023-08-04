@@ -39,7 +39,6 @@ class InitIdelium():
     --ideliumwsBaseurl      idelium server url ex: https://localhost
     --reportingService      where the data will be save: idelium | zephyr
     --ideliumKey            is the key for access to the idelium api
-    --forcedownload         force to ovewrite the configuration files
     --idChannel             idChannel
     
     Idelium server
@@ -181,14 +180,14 @@ class InitIdelium():
 
     def load_parameters(self, cl_params, ideliumws, printer):
 
-        sys.path.append(cl_params['dir_idelium_scripts'])
+        sys.path.append(cl_params['dir_idelium_scripts'] + "/" + cl_params['idProject'])
 
         cl_params['api_idelium']=cl_params['ideliumwsBaseurl'] + '/api/ideliumcl/'
         cl_params['printer']=printer
         test_config=None
         json_config=None
         json_step_config=None
-        test_config = ideliumws.download_configuration_files(cl_params)
+        test_config = ideliumws.get_configuration(cl_params)
         if test_config is False:
             return False
         print('Environment:' + cl_params['environment'])
@@ -223,4 +222,3 @@ class InitIdelium():
             'cl_params': cl_params,
             'test_config': test_config
         }
-        
