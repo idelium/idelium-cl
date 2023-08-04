@@ -224,21 +224,24 @@ class IdeliumWs:
                                           config["ideliumKey"],
                                           config["is_debug"])
             #save  plugin for projectId
+            json_plugin_code=json.loads(json_plugin['code'])
             array_plugins[json_plugin["name"]] = json_plugin["code"]
-            py_file_path = (configuration_directories[TypeDir.PLUGIN_DIR] + "/" +
-                          json_plugin["name"] + ".py")
+            #py_file_path = (configuration_directories[TypeDir.PLUGIN_DIR] + "/" + json_plugin["name"] + ".py"
             plugins_dir = config["dir_idelium_scripts"] + "/plugin"
+            py_file_path=(plugins_dir + "/" +
+                          json_plugin["name"] + ".py")
             if Path(plugins_dir).exists() is False:
-                os.mkdir(plugins_dir)
+                #os.mkdir(plugins_dir)
+                os.makedirs(plugins_dir)
                 if config["is_debug"] is True:
                     print("created temporary directory", plugins_dir)
-            py_file_path = plugins_dir + "/" + json_plugin["name"] + ".py"
-
-            if Path(py_file_path).exists(
-            ) is False or config["forcedownload"] is True:
-                py_file = open(py_file_path, "wt")
-                py_file.write(json_plugin["code"])
-                py_file.close()
+            if config["is_debug"] is True:
+                print("plugin file saved in:", py_file_path)
+            #if Path(py_file_path).exists(
+            #) is False or config["forcedownload"] is True:
+            py_file = open(py_file_path, "wt")
+            py_file.write(json_plugin_code[0])
+            py_file.close()
         #download environments
         json_environments = self.get_environments(config)
         printer.success("finish download file")
