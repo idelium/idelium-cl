@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from idelium._internal.commons.postmantranslate import PostmanTranslate
+from datetime import datetime
 from requests_oauthlib import OAuth1
 from argparse import HelpFormatter
 import requests
@@ -9,7 +11,7 @@ from urllib.parse import urlencode
 from idelium._internal.commons.ideliumprinter import InitPrinter
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-from idelium._internal.commons.postmantranslate import PostmanTranslate
+
 
 printer = InitPrinter()
 
@@ -77,6 +79,7 @@ class PostmanCollection:
         method=request_test['method']
         url=request_test['url']['raw']
         headers = self.get_parser(request_test['header'])
+        start_time=datetime.now()
         if 'auth' in request_test:
             headers = self.get_auth(request_test['auth'])
         if method == "POST" or method == "PUT" or method == "PATCH" or method == "DELETE":
@@ -125,11 +128,14 @@ class PostmanCollection:
                                data=json.dumps(payload),
                                files=files,
                                verify=False)
+        finish_time=datetime.now()
+        delta=(finish_time - start_time)
         return {
             'response': req.text,
             'status': str(req.status_code),
             'method' : method,
-            'url' : url
+            'url' : url,
+            'time' : delta.total_seconds()
         }
 
     def get_item_folder(self,collection):
