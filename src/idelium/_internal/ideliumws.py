@@ -75,12 +75,13 @@ class IdeliumWs:
                                 config["is_debug"])
 
     @staticmethod
-    def update_test(config, id_test, status):
+    def update_test(config, id_test, status,postman_data):
         ''' create test '''
         url = config["api_idelium"] + "test"
         payload = {
             "testId": id_test,
             "status": status,
+            "postmanData" : postman_data,
         }
         return Connection.start("PUT", url, payload, config["ideliumKey"],
                                 config["is_debug"])
@@ -351,10 +352,10 @@ class IdeliumWs:
                             "The test '" + cycle["name"] +
                             "' it is forcibly interrupted due to the blocking failure of the step"
                             )
-                            id_test = self.update_test(config, id_test, 2)
+                            id_test = self.update_test(config, id_test, 2, postman_data)
                             test_failed = True
                     else:
-                        self.update_test(config, id_test, 1)
+                        self.update_test(config, id_test, 1, postman_data)
             if config['ideliumServer'] is True:
                 os.remove(config['dir_idelium_scripts'] + 'server')
             if driver != None:
