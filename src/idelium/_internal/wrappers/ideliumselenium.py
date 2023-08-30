@@ -136,6 +136,8 @@ class IdeliumSelenium:
                     driver=webdriver.Chrome()
                 except:
                     printer.danger("webriver error")
+                    print(
+                        "probably you need to download mannualy the webdriver\nfrom https://googlechromelabs.github.io/chrome-for-testing")
                     if config['ideliumServer'] is False:
                         return_code = Result.KO
                         sys.exit(1)
