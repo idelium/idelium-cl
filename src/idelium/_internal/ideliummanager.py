@@ -5,6 +5,7 @@ import importlib.util
 from idelium._internal.commons.resultenum import Result
 from idelium._internal.wrappers.ideliumselenium import IdeliumSelenium
 from idelium._internal.wrappers.ideliumappium import IdeliumAppium
+from idelium._internal.thirdparties.ideliumpostman import PostmanCollection
 
 class StartManager:
     ''' Start manager '''
@@ -42,8 +43,8 @@ class StartManager:
         for object_step in config["json_step"]["steps"]:
             if status == "1":
                 if object_step['stepType'] == 'postman_collection':
-                    #postman=PostmanCollection()
-                    #postman_data=postman.start_postman_test(object_step['collection'])
+                    postman=PostmanCollection()
+                    postman_data=postman.start_postman_test(object_step['collection'],config["is_debug"])
                     typeOfStep='postman'
                 else:
                     return_object_step = wrapper.command(object_step["stepType"],
