@@ -20,7 +20,7 @@ idelium=StartManager()
 printer=InitPrinter()
 ideliumws=IdeliumWs()
 idelium_cl_lib=InitIdelium()
-IDELIUM_VERSION='1.0.7'
+IDELIUM_VERSION='1.0.8'
 
 def main(args: Optional[List[str]] = None) -> int:
     printer.print_important_text("Idelium Command Line " + IDELIUM_VERSION)
