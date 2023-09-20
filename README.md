@@ -19,7 +19,7 @@ Python 3.8.X
 If you have pip on your system, you can simply install or upgrade the Python bindings:
 
 ```
-pip install
+pip install idelium
 ```
 
 ## Run the script
