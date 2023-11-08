@@ -3,21 +3,16 @@ import requests
 import json
 import sys
 import base64
-import time
-import calendar
 from requests_hawk import HawkAuth
 from hashlib import sha256
 from idelium._internal.commons.postmantranslate import PostmanTranslate
 from datetime import datetime
-from requests_oauthlib import OAuth2
+from requests_oauthlib import OAuth1
 from argparse import HelpFormatter
-import urllib.parse
-
 from re import A
 from urllib.parse import urlencode
 from idelium._internal.commons.ideliumprinter import InitPrinter
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from idelium._internal.commons.outhsignature import OuthSignature
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -29,9 +24,10 @@ class PostmanCollection:
     
     def find_element_in_array(self, array, key, value):
         for i in array:
-            if i[key]==value:
-                return i
-        return None        
+            if key in i:
+                if i[key]==value:
+                    return i
+        return ''        
     def get_payload(self,request):
         return_data={}
         method='' 
@@ -100,20 +96,12 @@ class PostmanCollection:
                 auth['oauth1'], 'key', 'nonce')['value']
             token = self.find_element_in_array(
                 auth['oauth1'], 'key', 'token')['value']
-            version = self.find_element_in_array(
-                auth['oauth1'], 'key', 'version')['value']
-            timestamp = str(self.find_element_in_array(
-                auth['oauth1'], 'key', 'timestamp')['value'])
-            
-            signature_base_string=OuthSignature.create_parameter_string(consumer_key,nonce,signature_method,timestamp,token,version)
-            print (signature_base_string)
-            signature=urllib.parse.quote(OuthSignature.create_signature(consumer_secret + '&',signature_base_string,signature_method))
-            content = {
-                'Authorization' : 'OAuth oauth_consumer_key="' + consumer_key + '",oauth_signature_method="' + signature_method + '",oauth_timestamp="'+ timestamp + '",oauth_nonce="' + nonce +'",oauth_token="' + token + '",oauth_version="' + version +'",oauth_signature="'+signature + '"'  
-            }
+            token_secret = self.find_element_in_array(
+                auth['oauth1'], 'key', 'tokenSecret')['value']
+            auth = OAuth1(consumer_key, consumer_secret, token, token_secret, signature_type='auth_header', signature_method=signature_method)
             authReturn = {
-                'type': 'headers',
-                'content': content
+                'type': 'oauth1',
+                'content': auth
             }
         elif type_auth == 'basic':
             username = self.find_element_in_array(
@@ -139,7 +127,7 @@ class PostmanCollection:
                 auth['hawk'], 'key', 'authId')['value']
             authkey = self.find_element_in_array(
                 auth['hawk'], 'key', 'authKey')['value']
-            hawk_auth = HawkAuth(id=authid, key=authkey)
+            hawk_auth = HawkAuth(id=authid, key=authkey, algorithm='sha256')
             authReturn = {
                 'type': 'hawk',
                 'content': hawk_auth
@@ -159,11 +147,12 @@ class PostmanCollection:
         auth_headers=None
         if 'auth' in request_test:
             auth_headers=self.get_auth(request_test['auth'])
+            print (auth_headers)
             if auth_headers['type'] == 'headers':
                 headers = auth_headers['content']
             elif auth_headers['type'] == 'hawk':
                 auth = auth_headers['content']
-            elif auth_headers['type'] == 'outh1':
+            elif auth_headers['type'] == 'oauth1':
                 auth = auth_headers['content']
                 redirect_allow = True
 
@@ -209,22 +198,23 @@ class PostmanCollection:
                                     allow_redirects=redirect_allow,
                                        verify=False)
         elif method == "GET":
-            files = {}
-            if auth_headers == 'outh1':
+            files = {}      
+            if auth_headers != None and auth_headers['type'] == 'oauth1':
                 payload = {}
+                req = requests.get(url,auth=auth)
             else:
                 body = self.get_payload(request_test['body'])
                 if body['method'] == 'formdata':
                     payload = body['data']
                 elif body['method'] == 'raw':
                     payload = body['data']
-            req = requests.get(url,
-                               headers=headers,
-                               auth=auth,
-                               data=payload,
-                               files=files,
-                               allow_redirects=redirect_allow,
-                               verify=False)
+                req = requests.get(url,
+                                    headers=headers,
+                                    auth=auth,
+                                    data=payload,
+                                    files=files,
+                                    allow_redirects=redirect_allow,
+                                    verify=False)
         finish_time = datetime.now()
         if debug == True:
             print("Headers: " + json.dumps(headers))
@@ -260,15 +250,13 @@ class PostmanCollection:
                 for folder in item_folder['collection']:
                     if debug is True:
                         printer.success("-----> " + folder['name'])
-                    if folder['name'] == 'OAuth1.0 Verify Signature':
-                        collection_data.append(self.connection_test(folder['request'],folder['name'], debug))
-                        sys.exit()
+                    #if folder['name'] == 'OAuth1.0 Verify Signature':
+                    collection_data.append(self.connection_test(folder['request'],folder['name'], debug))
+                        #sys.exit()
 
             else:      
                 collection_data.append(self.connection_test(item['request'],debug))
         return collection_data
-
-
 
     def start_postman_test(self,postman,debug):
         collection_response=self.parse_collection(postman['collection'],debug)
