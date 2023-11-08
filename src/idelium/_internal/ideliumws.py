@@ -42,17 +42,11 @@ class Connection:
                              verify=False)
         elif method == "GET":
             req = requests.get(url, headers=headers, verify=False)
-            
-            
-
         if debug is True:
             print("Response: " + req.text)
             print("Headers: " + json.dumps(headers))
             print("Payload: " + json.dumps(payload))
             print(str(req.status_code) + " " + method + " " + url)
-        if req.text == '{"message":"Invalid key"}':
-            print ('INVALID KEY TEST IS STOPED')
-            sys.exit()
         return json.loads(req.text, object_pairs_hook=collections.OrderedDict)
 
 
