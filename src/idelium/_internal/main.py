@@ -22,15 +22,22 @@ ideliumws=IdeliumWs()
 idelium_cl_lib=InitIdelium()
 IDELIUM_VERSION='1.0.9'
 
-def main(args: Optional[List[str]] = None) -> int:
-    printer.print_important_text("Idelium Command Line " + IDELIUM_VERSION)
-    printer.print_important_text ("Selenium version:" + idelium_cl_lib.get_selenium_version())
-    if args is None:
-        args = sys.argv
-    define_parameters= idelium_cl_lib.define_parameters(args,ideliumws,printer)
-    cl_params=define_parameters['cl_params']
 
-    if cl_params['ideliumServer'] is False:
+def start_server(cl_params):
+        if os.path.exists(cl_params['dir_idelium_scripts'] + 'server'):
+            os.remove(cl_params['dir_idelium_scripts'] + 'server')
+        server_address = ('0.0.0.0', cl_params['ideliumServerPort'])
+        IdeliumServer.init(idelium, cl_params, ideliumws, idelium_cl_lib,printer)
+        sslctx = ssl.SSLContext()
+        sslctx.check_hostname = False
+        sslctx.load_cert_chain(certfile='cert/cert.pem', keyfile="cert/key.pem")
+        httpd = HTTPServer(server_address, IdeliumServer)
+        httpd.socket = sslctx.wrap_socket(httpd.socket, server_side=True)
+        printer.success('Server start on port:' +
+            str(cl_params['ideliumServerPort']))
+        httpd.serve_forever()
+
+def start_test(cl_params):
         define_parameters = idelium_cl_lib.load_parameters(cl_params, ideliumws, printer)
         cl_params = define_parameters['cl_params']
         test_config = define_parameters['test_config']
@@ -45,16 +52,17 @@ def main(args: Optional[List[str]] = None) -> int:
         else:
             printer.danger('Error: ' + cl_params['reportingService'] + ' has a wrong value')
         printer.success('Finish test')
+
+
+def main(args: Optional[List[str]] = None) -> int:
+    printer.print_important_text("Idelium Command Line " + IDELIUM_VERSION)
+    printer.print_important_text ("Selenium version:" + idelium_cl_lib.get_selenium_version())
+    if args is None:
+        args = sys.argv
+    define_parameters= idelium_cl_lib.define_parameters(args,ideliumws,printer)
+    cl_params=define_parameters['cl_params']
+
+    if cl_params['ideliumServer'] is False:
+         start_test(cl_params)
     else:
-        if os.path.exists(cl_params['dir_idelium_scripts'] + 'server'):
-            os.remove(cl_params['dir_idelium_scripts'] + 'server')
-        server_address = ('0.0.0.0', cl_params['ideliumServerPort'])
-        IdeliumServer.init(idelium, cl_params, ideliumws, idelium_cl_lib,printer)
-        sslctx = ssl.SSLContext()
-        sslctx.check_hostname = False
-        sslctx.load_cert_chain(certfile='cert/cert.pem', keyfile="cert/key.pem")
-        httpd = HTTPServer(server_address, IdeliumServer)
-        httpd.socket = sslctx.wrap_socket(httpd.socket, server_side=True)
-        printer.success('Server start on port:' +
-            str(cl_params['ideliumServerPort']))
-        httpd.serve_forever()
+        start_server(cl_params)
