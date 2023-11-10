@@ -20,6 +20,7 @@ from idelium._internal.commons.seleniumkeyevent import EventKey
 from idelium._internal.commons.seleniumby import SelBy
 
 
+printer = InitPrinter()
 class IdeliumSelenium:
     ''' IdeliumSelenium '''
     @staticmethod
@@ -76,7 +77,6 @@ class IdeliumSelenium:
     @staticmethod
     def click_object(selenium_object, note):
         ''' click_object '''
-        printer = InitPrinter()
         try:
             print(note, end="->", flush=True)
             time.sleep(1)
@@ -90,8 +90,7 @@ class IdeliumSelenium:
             return Result.KO
     @staticmethod
     def drag_and_drop(driver, config, object_step):
-        ''' drag_and_drop '''
-        printer = InitPrinter()
+        ''' drag_and_drop '''    
         try:
             drag_element = driver.find_element_by_xpath(
                 object_step["xpathDrag"])
@@ -106,8 +105,7 @@ class IdeliumSelenium:
             # sys.exit(1)
             return {'returnCode': Result.KO}
     def open_browser(self, driver, config, object_step):
-        ''' open browser '''
-        printer = InitPrinter()
+        ''' open browser '''  
         driver = None
         return_code = Result.OK
         ''' only for server mode '''
@@ -231,7 +229,7 @@ class IdeliumSelenium:
     @staticmethod
     def write_localstorage(driver, config, object_step):
         ''' write_localstorage '''
-        printer = InitPrinter()
+        
         try:
             print(object_step["note"], end="->", flush=True)
             script_js = ""
@@ -255,7 +253,7 @@ class IdeliumSelenium:
 
     def screen_shot(self, driver, file_name,is_server):
         """ screenshot """
-        printer = InitPrinter()
+        
         try:
             driver.get_screenshot_as_file(file_name)
             return Result.OK
@@ -267,7 +265,7 @@ class IdeliumSelenium:
 
     def click(self, driver, config, object_step):
         '''click '''
-        printer = InitPrinter()
+        
         by = SelBy()
         try:
             print(object_step["note"], end="->", flush=True)
@@ -287,7 +285,7 @@ class IdeliumSelenium:
 
     def select(self, driver, config, object_step):
         ''' select '''
-        printer = InitPrinter()
+        
         by = SelBy()
         print(object_step)
         try:
@@ -321,7 +319,7 @@ class IdeliumSelenium:
 
     def clear(self, driver, config, object_step):
         ''' clear '''
-        printer = InitPrinter()
+        
         by = SelBy()
         try:
             print(object_step["note"], end="->", flush=True)
@@ -340,7 +338,7 @@ class IdeliumSelenium:
 
     def send_keys(self, driver, config, object_step):
         ''' send keys '''
-        printer = InitPrinter()
+        
         selenium_key = EventKey()
         by = SelBy()
         try:
@@ -391,7 +389,7 @@ class IdeliumSelenium:
                                 wait_seconds=20):
         '''wait for next step'''
         failed = False
-        printer = InitPrinter()
+        
         try:
             print(note, end="->", flush=True)
             WebDriverWait(driver, wait_seconds).until(
@@ -409,7 +407,7 @@ class IdeliumSelenium:
 
     def command(self, command, driver, obj_config, object_step):
         ''' command '''
-        printer = InitPrinter()
+        
         commands = {
             "wait_and_click": self.wait_and_click,
             "wait_for_next_step": self.wait_for_next_step,
