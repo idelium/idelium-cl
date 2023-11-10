@@ -20,7 +20,7 @@ idelium=StartManager()
 printer=InitPrinter()
 ideliumws=IdeliumWs()
 idelium_cl_lib=InitIdelium()
-IDELIUM_VERSION='1.0.9'
+IDELIUM_VERSION='1.0.10'
 
 
 def start_server(cl_params):
@@ -35,6 +35,7 @@ def start_server(cl_params):
         httpd.socket = sslctx.wrap_socket(httpd.socket, server_side=True)
         printer.success('Server start on port:' +
             str(cl_params['ideliumServerPort']))
+        printer.success(f'Server start on port: {cl_params["ideliumServerPort"]}')
         httpd.serve_forever()
 
 def start_test(cl_params):
@@ -50,13 +51,13 @@ def start_test(cl_params):
             else:
                 zephyr.go_execution(idelium,cl_params)
         else:
-            printer.danger('Error: ' + cl_params['reportingService'] + ' has a wrong value')
+            printer.danger(f'Error: {cl_params["reportingService"]} has a wrong value')
         printer.success('Finish test')
 
 
 def main(args: Optional[List[str]] = None) -> int:
-    printer.print_important_text("Idelium Command Line " + IDELIUM_VERSION)
-    printer.print_important_text ("Selenium version:" + idelium_cl_lib.get_selenium_version())
+    printer.print_important_text(f"Idelium Command Line {IDELIUM_VERSION}")
+    printer.print_important_text(f"Selenium version: {idelium_cl_lib.get_selenium_version()}")
     if args is None:
         args = sys.argv
     define_parameters= idelium_cl_lib.define_parameters(args,ideliumws,printer)
