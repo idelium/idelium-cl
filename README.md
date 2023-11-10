@@ -19,10 +19,10 @@ Python 3.8.X
 If you have pip on your system, you can simply install or upgrade the Python bindings:
 
 ```
-pip install idelium     qsqwq
+pip install idelium
 ```
 
-## Run the script
+## Run the command
 
 idelium-cli can be used in two ways:
 
@@ -44,6 +44,46 @@ for idelium-cli in server mode useful for those who want to buy idelium enterpri
 ```
 idelium --ideliumServer
 ```
+
+### options
+```
+    Usage: idelium [options]
+
+    Options:
+
+    --help                  show this help
+    --idCycle               cycle id to associate to the execution "idCycle1,idCycle2,...."
+    --idProject             force idProject
+    --environment           environment json config file (required)
+    --useragent             set useragent for the test
+    --test                  for testing without store the results
+    --verbose               for debugging 
+    --dirChromedriver       default path of chromedriver path ("./chromedriver/last")
+    --dirConfigurationStep  default path ("./configurationStep") for configuration steps 
+    --dirStepFiles          default path ("./step") of directory for step files 
+    --dirIdeliumScript      default path (".") of directory for step files
+    --width                 default width of screen 1024
+    --height                default height of screen 768
+    --device                if is set useragent,height and width are ignored
+    --url                   url for test 
+    --ideliumwsBaseurl      idelium server url ex: https://localhost
+    --reportingService      where the data will be save: idelium | zephyr
+    --ideliumKey            is the key for access to the idelium api
+    --idChannel             idChannel
+    
+    Idelium server
+    --ideliumServer         with this option idelium-cli is in server mode
+    --ideliumServerPort     default is 8691
+
+    Zephir 
+    --jiraApiUrl            for change the default jira url (https://<host jira>/rest/api/latest/)
+    --idJira                jira id (required if idVersion and idCycle not setted)
+    --idVersion             version id to associate the execution 
+    --username              jira username (required)
+    --password              jira password (required)
+
+```
+
 
 ## Test Libraries used
 
