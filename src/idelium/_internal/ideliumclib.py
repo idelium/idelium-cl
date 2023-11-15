@@ -63,7 +63,7 @@ class InitIdelium():
     """
     @staticmethod
     def get_reguired_parameters():
-        ''' list of required parameters '''
+        """Returns a dictionary of the required parameters for Idelium."""
         return {
             "idProject" : 0,
             "idCycle" : 0,
@@ -72,7 +72,7 @@ class InitIdelium():
         }
     @staticmethod
     def get_default_parameters():
-        ''' set default parameters '''
+        """Returns a dictionary of the default parameters for Idelium."""
         return {
             'execution_name': 'automation test python',
             'reportingService': 'idelium',
@@ -144,7 +144,7 @@ class InitIdelium():
                     print (self.get_syntax())
                     print("\n" + array_command[0] + ": is not a valid option")
                     sys.exit(1)
-            count=count=count + 1
+            count += 1
         count_req=0
         for i in check_required:
             count_req=count_req + check_required[i]
