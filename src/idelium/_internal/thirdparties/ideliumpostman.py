@@ -3,6 +3,7 @@ import requests
 import json
 import sys
 import base64
+from tqdm import tqdm
 from requests_hawk import HawkAuth
 from hashlib import sha256
 from idelium._internal.commons.postmantranslate import PostmanTranslate
@@ -147,7 +148,6 @@ class PostmanCollection:
         auth_headers=None
         if 'auth' in request_test:
             auth_headers=self.get_auth(request_test['auth'])
-            print (auth_headers)
             if auth_headers['type'] == 'headers':
                 headers = auth_headers['content']
             elif auth_headers['type'] == 'hawk':
@@ -247,12 +247,10 @@ class PostmanCollection:
                 printer.print_important_text(item['name'])
             item_folder=self.get_item_folder(item)
             if item_folder['change'] == True:
-                for folder in item_folder['collection']:
+                for folder in tqdm(item_folder['collection'],desc="Connnection", unit="tests"):
                     if debug is True:
                         printer.success("-----> " + folder['name'])
-                    #if folder['name'] == 'OAuth1.0 Verify Signature':
                     collection_data.append(self.connection_test(folder['request'],folder['name'], debug))
-                        #sys.exit()
 
             else:      
                 collection_data.append(self.connection_test(item['request'],debug))
