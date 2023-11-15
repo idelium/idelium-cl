@@ -55,7 +55,7 @@ class IdeliumAppium():
             printer.warning ('Context name:')
             index=0
             for i in contexts:
-                index =index + 1
+                index += 1
                 printer.warning (str(index) + ")" + i)
         except BaseException as err:
             printer.danger('ko')
