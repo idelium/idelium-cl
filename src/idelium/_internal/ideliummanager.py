@@ -41,66 +41,52 @@ class StartManager:
         typeOfStep='seleniumOrAppium'
         postman_data=None        
         for object_step in config["json_step"]["steps"]:
-            if status == "1":
-                if object_step['stepType'] == 'postman_collection':
-                    postman=PostmanCollection()
-                    postman_data=postman.start_postman_test(object_step['collection'],config["is_debug"])
-                    typeOfStep='postman'
-                else:
-                    return_object_step = wrapper.command(object_step["stepType"],
-                                                    driver, config, object_step)
-                    if return_object_step is not None:
-                        if "config" in return_object_step.keys():
-                            config = return_object_step["config"]
-                        if "driver" in return_object_step.keys():
-                            driver = return_object_step["driver"]
-                        if return_object_step["returnCode"] == Result.KO:
-                            status = "2"
-                    else:
-                        try:
-                            module = importlib.import_module(
-                                "plugin." + object_step["stepType"],
-                                package=__package__)
-                            params = None
-                            if "params" in object_step:
-                                params = object_step["params"]
-                            plugin_response = module.init(driver,
-                                                        config["json_config"],
-                                                        params)
-                            if plugin_response == Result.KO:
-                                status = "2"
-                                print(
-                                    "Plugin response: " + object_step["note"],
-                                    end="->",
-                                    flush=True,
-                                )
-                                printer.danger("FAILED")
-                            if plugin_response == Result.NA:
-                                status = "5"
-                                print(
-                                    "Plugin response: " + object_step["note"],
-                                    end="->",
-                                    flush=True,
-                                )
-                                printer.warning("NA")
-                        except BaseException as err:
-                            printer.danger("----------")
-                            print(err)
-                            printer.danger("----------")
-                            printer.danger(
-                                "Warning stepType: " + object_step["stepType"] +
-                                " not exist or there is an error in your extra module"
-                            )
-                            if config['ideliumServer'] is False:
-                                sys.exit(1)
-                            else:
-                                status=2
-                if status == "2":
-                    step_failed = object_step
-            else:
+            if status != "1":
                 printer.danger(object_step["stepType"] + ": skipped")
-        return {"driver": driver, "status": status, "step_failed": step_failed, 'type': typeOfStep, 'postman_data': postman_data}
+                continue
 
+            if object_step['stepType'] == 'postman_collection':
+                postman=PostmanCollection()
+                postman_data=postman.start_postman_test(object_step['collection'],config["is_debug"])
+                typeOfStep='postman'
+                continue
+
+            return_object_step = wrapper.command(object_step["stepType"], driver, config, object_step)
+            if return_object_step is None:
+                try:
+                    module = importlib.import_module("plugin." + object_step["stepType"], package=__package__)
+                    params = object_step.get("params", None)
+                    plugin_response = module.init(driver, config["json_config"], params)
+                    if plugin_response == Result.KO:
+                        status = "2"
+                        print("Plugin response: " + object_step["note"], end="->", flush=True)
+                        printer.danger("FAILED")
+                    if plugin_response == Result.NA:
+                        status = "5"
+                        print("Plugin response: " + object_step["note"], end="->", flush=True)
+                        printer.warning("NA")
+                except Exception as err:
+                    printer.danger("----------")
+                    print(err)
+                    printer.danger("----------")
+                    printer.danger("Warning stepType: " + object_step["stepType"] + " not exist or there is an error in your extra module")
+                    if not config['ideliumServer']:
+                        sys.exit(1)
+                    else:
+                        status=2
+                continue
+
+            if "config" in return_object_step:
+                config = return_object_step["config"]
+            if "driver" in return_object_step:
+                driver = return_object_step["driver"]
+            if return_object_step["returnCode"] == Result.KO:
+                status = "2"
+
+            if status == "2":
+                step_failed = object_step
+
+        return {"driver": driver, "status": status, "step_failed": step_failed, 'type': typeOfStep, 'postman_data': postman_data}
     def execute_single_step(self, test_configurations, config):
         """ execute single page """
         printer = config["printer"]
