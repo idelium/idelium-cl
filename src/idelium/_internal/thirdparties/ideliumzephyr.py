@@ -314,11 +314,11 @@ class ZephyrConnection:
                     config["folder_id"] = folder_id
                     config['idCycle'] = id_cycle
                     self.start_test_case(config)
-                    count = count + 1
+                    count += 1
                 if count == return_execution["totalExecutions"]:
                     exit = True
                 else:
-                    offset = offset + 10
+                    offset += 10
 
     def start_test_case(self, idelium, test_configurations, config):
         ''' start test case'''
@@ -451,7 +451,7 @@ class ZephyrConnection:
                                 " e' forzamente interrotta causa fallimento bloccante dello step"
                             )
                             stop_execute_steps = True
-                    index = index + 1
+                    index += 1
             driver.quit()
             if config["is_test"] is False:
                 self.update_execution(
