@@ -83,7 +83,9 @@ setup(
                       'Appium-Python-Client',
                       'webdriver-manager',
                       'Pillow',
-                      'Postpy2'
+                      'requests_hawk',
+                      'requests_oauthlib',
+                      'tqdm',
                       ],  # Optional
 
     # List additional groups of dependencies here (e.g. development
