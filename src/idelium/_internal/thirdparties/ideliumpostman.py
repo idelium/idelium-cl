@@ -247,7 +247,7 @@ class PostmanCollection:
                 printer.print_important_text(item['name'])
             item_folder=self.get_item_folder(item)
             if item_folder['change'] == True:
-                for folder in tqdm(item_folder['collection'],desc="Connnection", unit="tests"):
+                for folder in tqdm(item_folder['collection'],desc=item['name'], unit=" test"):
                     if debug is True:
                         printer.success("-----> " + folder['name'])
                     collection_data.append(self.connection_test(folder['request'],folder['name'], debug))
